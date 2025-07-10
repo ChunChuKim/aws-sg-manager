@@ -1,0 +1,47 @@
+{
+  "name": "aws-security-group-manager",
+  "version": "1.0.0",
+  "description": "Complete enterprise-grade AWS Security Group management application developed by Amazon Q in just 1 hour",
+  "main": "aws-api.js",
+  "scripts": {
+    "start": "node aws-api.js",
+    "dev": "nodemon aws-api.js",
+    "setup": "./run-complete.sh",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "aws",
+    "security-group",
+    "management",
+    "enterprise",
+    "full-stack",
+    "amazon-q",
+    "nodejs",
+    "mongodb",
+    "visualization"
+  ],
+  "author": "Amazon Q",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "mongodb": "^6.3.0",
+    "aws-sdk": "^2.1490.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  },
+  "engines": {
+    "node": ">=14.0.0",
+    "npm": ">=6.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/aws-security-group-manager.git"
+  },
+  "bugs": {
+    "url": "https://github.com/your-username/aws-security-group-manager/issues"
+  },
+  "homepage": "https://github.com/your-username/aws-security-group-manager#readme"
+}

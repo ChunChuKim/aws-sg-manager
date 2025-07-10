@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌐 Network Visualization - AWS Security Group Manager</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+        
+        .app-bar {
+            background: linear-gradient(45deg, #1976d2 30%, #42a5f5 90%);
+            color: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .control-label {
+            font-weight: 600;
+            color: #333;
+            font-size: 0.9rem;
+        }
+        
+        .form-control {
+            padding: 0.75rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: #1976d2;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 0.25rem;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(45deg, #1976d2 30%, #42a5f5 90%);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: #f5f5f5;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        .network-container {
+            height: 600px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            position: relative;
+            background: #fafafa;
+        }
+        
+        .network-info {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(255,255,255,0.9);
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            z-index: 100;
+            max-width: 300px;
+        }
+        
+        .legend {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .stat-card {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #1976d2;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-weight: 600;
+        }
+        
+        .loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 400px;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #1976d2;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .node-details {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+        
+        .node-title {
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+        
+        .node-info {
+            font-size: 0.9rem;
+            color: #666;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-bar">
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <span class="material-icons">account_tree</span>
+            <span>Network Visualization</span>
+        </div>
+        <div>
+            <button onclick="location.href='http://54.92.198.243:8082/'" class="btn" style="background: rgba(255,255,255,0.2); color: white;">
+                <span class="material-icons" style="vertical-align: middle;">home</span>
+                홈으로
+            </button>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- 컨트롤 패널 -->
+        <div class="card">
+            <div class="card-title">
+                <span class="material-icons">tune</span>
+                시각화 설정
+            </div>
+            
+            <div class="controls">
+                <div class="control-group">
+                    <label class="control-label">VPC 필터</label>
+                    <select class="form-control" id="vpc-filter" onchange="updateVisualization()">
+                        <option value="all">모든 VPC</option>
+                    </select>
+                </div>
+                
+                <div class="control-group">
+                    <label class="control-label">표시 옵션</label>
+                    <div style="display: flex; gap: 1rem;">
+                        <label style="display: flex; align-items: center; gap: 0.5rem;">
+                            <input type="checkbox" id="show-expired" onchange="updateVisualization()">
+                            만료된 규칙만 표시
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 0.5rem;">
+                            <input type="checkbox" id="show-labels" checked onchange="updateVisualization()">
+                            라벨 표시
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="control-group">
+                    <label class="control-label">레이아웃</label>
+                    <select class="form-control" id="layout-type" onchange="updateLayout()">
+                        <option value="hierarchical">계층형</option>
+                        <option value="physics">물리 시뮬레이션</option>
+                        <option value="circular">원형</option>
+                    </select>
+                </div>
+                
+                <div class="control-group">
+                    <button class="btn btn-primary" onclick="refreshData()">
+                        <span class="material-icons" style="vertical-align: middle;">refresh</span>
+                        새로고침
+                    </button>
+                    <button class="btn btn-secondary" onclick="exportNetwork()">
+                        <span class="material-icons" style="vertical-align: middle;">download</span>
+                        내보내기
+                    </button>
+                </div>
+            </div>
+            
+            <!-- 범례 -->
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #4CAF50;"></div>
+                    <span>정상 Security Group</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #FF9800;"></div>
+                    <span>만료 규칙 있음</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #F44336;"></div>
+                    <span>위험한 규칙</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #2196F3;"></div>
+                    <span>VPC</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 네트워크 시각화 -->
+        <div class="card">
+            <div class="card-title">
+                <span class="material-icons">account_tree</span>
+                Security Group 네트워크 관계도
+            </div>
+            
+            <div class="network-container" id="network-container">
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <p>네트워크 데이터를 불러오는 중...</p>
+                </div>
+                
+                <div class="network-info" id="network-info" style="display: none;">
+                    <div class="node-title">선택된 노드</div>
+                    <div class="node-details" id="node-details">
+                        노드를 클릭하여 상세 정보를 확인하세요.
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 통계 -->
+        <div class="card">
+            <div class="card-title">
+                <span class="material-icons">analytics</span>
+                네트워크 분석
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number" id="total-nodes">0</div>
+                    <div class="stat-label">총 노드 수</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="total-edges">0</div>
+                    <div class="stat-label">총 연결 수</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="vpc-count">0</div>
+                    <div class="stat-label">VPC 수</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="risk-nodes">0</div>
+                    <div class="stat-label">위험 노드</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let network = null;
+        let nodes = null;
+        let edges = null;
+        let allData = null;
+        
+        // 페이지 로드 시 초기화
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeNetwork();
+            loadNetworkData();
+        });
+        
+        // 네트워크 초기화
+        function initializeNetwork() {
+            const container = document.getElementById('network-container');
+            
+            // 기본 옵션
+            const options = {
+                nodes: {
+                    shape: 'dot',
+                    size: 20,
+                    font: {
+                        size: 14,
+                        color: '#333'
+                    },
+                    borderWidth: 2,
+                    shadow: true
+                },
+                edges: {
+                    width: 2,
+                    color: { inherit: 'from' },
+                    smooth: {
+                        type: 'continuous'
+                    },
+                    arrows: {
+                        to: { enabled: true, scaleFactor: 1 }
+                    }
+                },
+                layout: {
+                    hierarchical: {
+                        enabled: true,
+                        direction: 'UD',
+                        sortMethod: 'directed'
+                    }
+                },
+                physics: {
+                    hierarchicalRepulsion: {
+                        centralGravity: 0.0,
+                        springLength: 100,
+                        springConstant: 0.01,
+                        nodeDistance: 120,
+                        damping: 0.09
+                    },
+                    maxVelocity: 50,
+                    solver: 'hierarchicalRepulsion',
+                    timestep: 0.35,
+                    stabilization: { iterations: 150 }
+                },
+                interaction: {
+                    hover: true,
+                    tooltipDelay: 300
+                }
+            };
+            
+            // 빈 데이터로 네트워크 생성
+            nodes = new vis.DataSet([]);
+            edges = new vis.DataSet([]);
+            
+            network = new vis.Network(container, { nodes: nodes, edges: edges }, options);
+            
+            // 이벤트 리스너
+            network.on('click', function(params) {
+                if (params.nodes.length > 0) {
+                    showNodeDetails(params.nodes[0]);
+                }
+            });
+            
+            network.on('hoverNode', function(params) {
+                container.style.cursor = 'pointer';
+            });
+            
+            network.on('blurNode', function(params) {
+                container.style.cursor = 'default';
+            });
+        }
+        
+        // 네트워크 데이터 로드
+        async function loadNetworkData() {
+            try {
+                const response = await fetch('http://54.92.198.243:8081/api/security-groups');
+                const data = await response.json();
+                
+                allData = data.data;
+                generateNetworkData(allData);
+                updateVPCFilter(allData);
+                
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('network-info').style.display = 'block';
+                
+            } catch (error) {
+                console.error('네트워크 데이터 로드 실패:', error);
+                document.getElementById('loading').innerHTML = 
+                    '<p style="color: #f44336;">네트워크 데이터를 불러올 수 없습니다.</p>';
+            }
+        }
+        
+        // 네트워크 데이터 생성
+        function generateNetworkData(securityGroups) {
+            const networkNodes = [];
+            const networkEdges = [];
+            const vpcNodes = new Set();
+            
+            // VPC 노드 생성
+            securityGroups.forEach(sg => {
+                if (!vpcNodes.has(sg.vpcId)) {
+                    vpcNodes.add(sg.vpcId);
+                    networkNodes.push({
+                        id: sg.vpcId,
+                        label: sg.vpcId,
+                        group: 'vpc',
+                        color: '#2196F3',
+                        size: 30,
+                        title: `VPC: ${sg.vpcId}\\nSecurity Groups: ${securityGroups.filter(s => s.vpcId === sg.vpcId).length}`
+                    });
+                }
+            });
+            
+            // Security Group 노드 생성
+            securityGroups.forEach(sg => {
+                const color = sg.hasExpiredRules ? '#FF9800' : 
+                             (sg.inboundRules && sg.inboundRules.some(rule => rule.cidrBlocks.includes('0.0.0.0/0'))) ? '#F44336' : '#4CAF50';
+                
+                networkNodes.push({
+                    id: sg.id,
+                    label: sg.groupName,
+                    group: 'sg',
+                    color: color,
+                    size: 20,
+                    title: `${sg.groupName}\\n${sg.description}\\nRules: ${sg.rulesCount}\\nStatus: ${sg.hasExpiredRules ? 'Has Expired Rules' : 'Normal'}`,
+                    vpcId: sg.vpcId,
+                    hasExpiredRules: sg.hasExpiredRules,
+                    data: sg
+                });
+                
+                // VPC와 Security Group 연결
+                networkEdges.push({
+                    from: sg.vpcId,
+                    to: sg.id,
+                    color: '#ccc',
+                    width: 1
+                });
+            });
+            
+            // Security Group 간 관계 생성 (규칙 기반)
+            securityGroups.forEach(sg => {
+                if (sg.inboundRules) {
+                    sg.inboundRules.forEach(rule => {
+                        // 다른 Security Group을 참조하는 규칙 찾기
+                        rule.cidrBlocks.forEach(cidr => {
+                            if (cidr.startsWith('sg-')) {
+                                const targetSG = securityGroups.find(s => s.id === cidr);
+                                if (targetSG) {
+                                    networkEdges.push({
+                                        from: targetSG.id,
+                                        to: sg.id,
+                                        color: rule.ipProtocol === 'tcp' ? '#4CAF50' : '#FF9800',
+                                        width: 2,
+                                        title: `${rule.ipProtocol.toUpperCase()}:${rule.portRange}\\n${rule.description}`
+                                    });
+                                }
+                            }
+                        });
+                    });
+                }
+            });
+            
+            // 데이터 업데이트
+            nodes.update(networkNodes);
+            edges.update(networkEdges);
+            
+            // 통계 업데이트
+            updateStats(networkNodes, networkEdges);
+        }
+        
+        // VPC 필터 업데이트
+        function updateVPCFilter(securityGroups) {
+            const vpcFilter = document.getElementById('vpc-filter');
+            const vpcs = [...new Set(securityGroups.map(sg => sg.vpcId))];
+            
+            vpcFilter.innerHTML = '<option value="all">모든 VPC</option>';
+            vpcs.forEach(vpc => {
+                const option = document.createElement('option');
+                option.value = vpc;
+                option.textContent = vpc;
+                vpcFilter.appendChild(option);
+            });
+        }
+        
+        // 시각화 업데이트
+        function updateVisualization() {
+            if (!allData) return;
+            
+            const vpcFilter = document.getElementById('vpc-filter').value;
+            const showExpired = document.getElementById('show-expired').checked;
+            const showLabels = document.getElementById('show-labels').checked;
+            
+            let filteredData = allData;
+            
+            // VPC 필터 적용
+            if (vpcFilter !== 'all') {
+                filteredData = filteredData.filter(sg => sg.vpcId === vpcFilter);
+            }
+            
+            // 만료된 규칙 필터 적용
+            if (showExpired) {
+                filteredData = filteredData.filter(sg => sg.hasExpiredRules);
+            }
+            
+            generateNetworkData(filteredData);
+            
+            // 라벨 표시/숨김
+            const nodeUpdate = nodes.get().map(node => ({
+                ...node,
+                label: showLabels ? (node.group === 'vpc' ? node.id : node.data?.groupName || node.label) : ''
+            }));
+            nodes.update(nodeUpdate);
+        }
+        
+        // 레이아웃 변경
+        function updateLayout() {
+            const layoutType = document.getElementById('layout-type').value;
+            
+            let options = {};
+            
+            switch (layoutType) {
+                case 'hierarchical':
+                    options = {
+                        layout: {
+                            hierarchical: {
+                                enabled: true,
+                                direction: 'UD',
+                                sortMethod: 'directed'
+                            }
+                        },
+                        physics: {
+                            enabled: false
+                        }
+                    };
+                    break;
+                case 'physics':
+                    options = {
+                        layout: {
+                            hierarchical: {
+                                enabled: false
+                            }
+                        },
+                        physics: {
+                            enabled: true,
+                            barnesHut: {
+                                gravitationalConstant: -2000,
+                                centralGravity: 0.3,
+                                springLength: 95,
+                                springConstant: 0.04,
+                                damping: 0.09
+                            }
+                        }
+                    };
+                    break;
+                case 'circular':
+                    options = {
+                        layout: {
+                            hierarchical: {
+                                enabled: false
+                            }
+                        },
+                        physics: {
+                            enabled: false
+                        }
+                    };
+                    break;
+            }
+            
+            network.setOptions(options);
+        }
+        
+        // 노드 상세 정보 표시
+        function showNodeDetails(nodeId) {
+            const node = nodes.get(nodeId);
+            const detailsDiv = document.getElementById('node-details');
+            
+            if (node.group === 'vpc') {
+                detailsDiv.innerHTML = `
+                    <div class="node-title">VPC: ${node.id}</div>
+                    <div class="node-info">
+                        VPC ID: ${node.id}<br>
+                        연결된 Security Groups: ${allData.filter(sg => sg.vpcId === node.id).length}개
+                    </div>
+                `;
+            } else if (node.data) {
+                const sg = node.data;
+                detailsDiv.innerHTML = `
+                    <div class="node-title">${sg.groupName}</div>
+                    <div class="node-info">
+                        <strong>ID:</strong> ${sg.id}<br>
+                        <strong>설명:</strong> ${sg.description}<br>
+                        <strong>VPC:</strong> ${sg.vpcId}<br>
+                        <strong>규칙 수:</strong> ${sg.rulesCount}<br>
+                        <strong>상태:</strong> ${sg.hasExpiredRules ? '만료 규칙 있음' : '정상'}<br>
+                        <strong>생성일:</strong> ${new Date(sg.createdTime).toLocaleDateString('ko-KR')}
+                    </div>
+                `;
+            }
+        }
+        
+        // 통계 업데이트
+        function updateStats(networkNodes, networkEdges) {
+            document.getElementById('total-nodes').textContent = networkNodes.length;
+            document.getElementById('total-edges').textContent = networkEdges.length;
+            document.getElementById('vpc-count').textContent = networkNodes.filter(n => n.group === 'vpc').length;
+            document.getElementById('risk-nodes').textContent = networkNodes.filter(n => n.color === '#F44336').length;
+        }
+        
+        // 데이터 새로고침
+        function refreshData() {
+            document.getElementById('loading').style.display = 'flex';
+            document.getElementById('network-info').style.display = 'none';
+            loadNetworkData();
+        }
+        
+        // 네트워크 내보내기
+        function exportNetwork() {
+            const canvas = network.getCanvas();
+            const dataURL = canvas.toDataURL();
+            
+            const link = document.createElement('a');
+            link.download = 'security-group-network.png';
+            link.href = dataURL;
+            link.click();
+        }
+    </script>
+</body>
+</html>

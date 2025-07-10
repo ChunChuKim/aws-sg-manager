@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🛡️ Request Manager - AWS Security Group Manager</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+        
+        .app-bar {
+            background: linear-gradient(45deg, #1976d2 30%, #42a5f5 90%);
+            color: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 0.25rem;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(45deg, #1976d2 30%, #42a5f5 90%);
+            color: white;
+        }
+        
+        .btn-success {
+            background: linear-gradient(45deg, #4caf50 30%, #8bc34a 90%);
+            color: white;
+        }
+        
+        .btn-danger {
+            background: linear-gradient(45deg, #f44336 30%, #ff7043 90%);
+            color: white;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: #1976d2;
+        }
+        
+        .request-item {
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .request-item:hover {
+            border-color: #1976d2;
+            box-shadow: 0 4px 15px rgba(25,118,210,0.1);
+        }
+        
+        .request-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .request-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #333;
+        }
+        
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .status-pending {
+            background: #fff3e0;
+            color: #ef6c00;
+        }
+        
+        .status-approved {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+        
+        .status-rejected {
+            background: #ffebee;
+            color: #c62828;
+        }
+        
+        .request-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .detail-label {
+            font-size: 0.8rem;
+            color: #666;
+            margin-bottom: 0.25rem;
+        }
+        
+        .detail-value {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+        
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+        }
+        
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+        
+        .alert-success {
+            background: #e8f5e8;
+            color: #2e7d32;
+            border: 1px solid #4caf50;
+        }
+        
+        .alert-error {
+            background: #ffebee;
+            color: #c62828;
+            border: 1px solid #f44336;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-bar">
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <span class="material-icons">assignment</span>
+            <span>Request Manager</span>
+        </div>
+        <div>
+            <button onclick="location.href='http://54.92.198.243:8082/'" class="btn" style="background: rgba(255,255,255,0.2); color: white;">
+                <span class="material-icons" style="vertical-align: middle;">home</span>
+                홈으로
+            </button>
+        </div>
+    </div>
+
+    <div class="container">
+        <div id="alert-container"></div>
+        
+        <!-- 새 요청 생성 -->
+        <div class="card">
+            <div class="card-title">
+                <span class="material-icons">add_circle</span>
+                새 요청 생성
+            </div>
+            
+            <form id="new-request-form">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
+                    <div class="form-group">
+                        <label class="form-label">요청자 이름</label>
+                        <input type="text" class="form-control" id="requesterName" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">이메일</label>
+                        <input type="email" class="form-control" id="requesterEmail" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Security Group</label>
+                        <select class="form-control" id="securityGroupId" required>
+                            <option value="">선택하세요...</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">요청 유형</label>
+                        <select class="form-control" id="requestType" required>
+                            <option value="ADD_RULE">규칙 추가</option>
+                            <option value="REMOVE_RULE">규칙 제거</option>
+                            <option value="MODIFY_RULE">규칙 수정</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">프로토콜</label>
+                        <select class="form-control" id="protocol" required>
+                            <option value="tcp">TCP</option>
+                            <option value="udp">UDP</option>
+                            <option value="icmp">ICMP</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">포트</label>
+                        <input type="text" class="form-control" id="port" placeholder="80 또는 80-443" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">CIDR 블록</label>
+                        <input type="text" class="form-control" id="cidrBlock" placeholder="0.0.0.0/0" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">우선순위</label>
+                        <select class="form-control" id="priority" required>
+                            <option value="HIGH">높음</option>
+                            <option value="MEDIUM">보통</option>
+                            <option value="LOW">낮음</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">설명</label>
+                    <input type="text" class="form-control" id="description" placeholder="규칙에 대한 설명" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">요청 사유</label>
+                    <textarea class="form-control" id="justification" rows="3" placeholder="요청하는 이유를 상세히 설명해주세요" required></textarea>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">
+                    <span class="material-icons" style="vertical-align: middle;">send</span>
+                    요청 제출
+                </button>
+            </form>
+        </div>
+        
+        <!-- 요청 목록 -->
+        <div class="card">
+            <div class="card-title">
+                <span class="material-icons">list</span>
+                요청 목록
+                <button onclick="loadRequests()" class="btn btn-primary" style="margin-left: auto;">
+                    <span class="material-icons" style="vertical-align: middle;">refresh</span>
+                    새로고침
+                </button>
+            </div>
+            
+            <div id="requests-container">
+                <div class="loading">
+                    <p>요청 목록을 불러오는 중...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 승인/거부 모달 -->
+    <div id="review-modal" class="modal">
+        <div class="modal-content">
+            <h3 style="margin-bottom: 1rem;">요청 검토</h3>
+            <div id="review-request-details"></div>
+            
+            <div class="form-group">
+                <label class="form-label">검토자 이메일</label>
+                <input type="email" class="form-control" id="reviewerEmail" value="admin@workshop.com">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">검토 의견</label>
+                <textarea class="form-control" id="reviewComments" rows="3" placeholder="승인/거부 사유를 입력하세요"></textarea>
+            </div>
+            
+            <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+                <button onclick="closeReviewModal()" class="btn" style="background: #ccc;">취소</button>
+                <button onclick="approveRequest()" class="btn btn-success">승인</button>
+                <button onclick="rejectRequest()" class="btn btn-danger">거부</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentRequestId = null;
+        
+        // 페이지 로드 시 초기화
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSecurityGroups();
+            loadRequests();
+            
+            // 폼 제출 이벤트
+            document.getElementById('new-request-form').addEventListener('submit', createRequest);
+        });
+        
+        // Security Groups 목록 로드
+        async function loadSecurityGroups() {
+            try {
+                const response = await fetch('http://54.92.198.243:8081/api/security-groups');
+                const data = await response.json();
+                
+                const select = document.getElementById('securityGroupId');
+                select.innerHTML = '<option value="">선택하세요...</option>';
+                
+                data.data.forEach(sg => {
+                    const option = document.createElement('option');
+                    option.value = sg.id;
+                    option.textContent = `${sg.groupName} (${sg.id})`;
+                    select.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Security Groups 로드 실패:', error);
+            }
+        }
+        
+        // 요청 목록 로드
+        async function loadRequests() {
+            try {
+                const response = await fetch('http://54.92.198.243:8081/api/requests');
+                const data = await response.json();
+                
+                const container = document.getElementById('requests-container');
+                
+                if (data.data.length === 0) {
+                    container.innerHTML = '<p style="text-align: center; color: #666;">요청이 없습니다.</p>';
+                    return;
+                }
+                
+                container.innerHTML = data.data.map(request => `
+                    <div class="request-item">
+                        <div class="request-header">
+                            <div class="request-title">${request.requestType} - ${request.description}</div>
+                            <span class="status-badge status-${request.status.toLowerCase()}">${getStatusText(request.status)}</span>
+                        </div>
+                        
+                        <div class="request-details">
+                            <div class="detail-item">
+                                <span class="detail-label">요청자</span>
+                                <span class="detail-value">${request.requesterName}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Security Group</span>
+                                <span class="detail-value">${request.securityGroupName}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">프로토콜/포트</span>
+                                <span class="detail-value">${request.protocol}/${request.port}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">CIDR</span>
+                                <span class="detail-value">${request.cidrBlock}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">우선순위</span>
+                                <span class="detail-value">${request.priority}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">요청일시</span>
+                                <span class="detail-value">${new Date(request.requestedAt).toLocaleString('ko-KR')}</span>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top: 1rem;">
+                            <strong>요청 사유:</strong> ${request.justification}
+                        </div>
+                        
+                        ${request.status === 'PENDING' ? `
+                            <div style="margin-top: 1rem;">
+                                <button onclick="openReviewModal('${request.id}')" class="btn btn-primary">
+                                    <span class="material-icons" style="vertical-align: middle;">rate_review</span>
+                                    검토하기
+                                </button>
+                            </div>
+                        ` : ''}
+                        
+                        ${request.reviewedAt ? `
+                            <div style="margin-top: 1rem; padding: 1rem; background: #f5f5f5; border-radius: 8px;">
+                                <strong>검토 결과:</strong><br>
+                                검토자: ${request.reviewedBy}<br>
+                                검토일시: ${new Date(request.reviewedAt).toLocaleString('ko-KR')}<br>
+                                의견: ${request.reviewComments || '없음'}
+                            </div>
+                        ` : ''}
+                    </div>
+                `).join('');
+                
+            } catch (error) {
+                console.error('요청 목록 로드 실패:', error);
+                document.getElementById('requests-container').innerHTML = 
+                    '<p style="text-align: center; color: #f44336;">요청 목록을 불러올 수 없습니다.</p>';
+            }
+        }
+        
+        // 새 요청 생성
+        async function createRequest(event) {
+            event.preventDefault();
+            
+            const formData = {
+                requesterName: document.getElementById('requesterName').value,
+                requesterEmail: document.getElementById('requesterEmail').value,
+                securityGroupId: document.getElementById('securityGroupId').value,
+                securityGroupName: document.getElementById('securityGroupId').selectedOptions[0].textContent,
+                requestType: document.getElementById('requestType').value,
+                ruleType: 'INBOUND',
+                protocol: document.getElementById('protocol').value,
+                port: document.getElementById('port').value,
+                cidrBlock: document.getElementById('cidrBlock').value,
+                description: document.getElementById('description').value,
+                justification: document.getElementById('justification').value,
+                priority: document.getElementById('priority').value
+            };
+            
+            try {
+                const response = await fetch('http://54.92.198.243:8081/api/requests/create', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showAlert('요청이 성공적으로 생성되었습니다!', 'success');
+                    document.getElementById('new-request-form').reset();
+                    loadRequests();
+                } else {
+                    showAlert('요청 생성에 실패했습니다: ' + result.message, 'error');
+                }
+            } catch (error) {
+                console.error('요청 생성 실패:', error);
+                showAlert('요청 생성 중 오류가 발생했습니다.', 'error');
+            }
+        }
+        
+        // 검토 모달 열기
+        function openReviewModal(requestId) {
+            currentRequestId = requestId;
+            document.getElementById('review-modal').style.display = 'block';
+        }
+        
+        // 검토 모달 닫기
+        function closeReviewModal() {
+            document.getElementById('review-modal').style.display = 'none';
+            currentRequestId = null;
+        }
+        
+        // 요청 승인
+        async function approveRequest() {
+            if (!currentRequestId) return;
+            
+            const reviewerEmail = document.getElementById('reviewerEmail').value;
+            const comments = document.getElementById('reviewComments').value;
+            
+            try {
+                const response = await fetch('http://54.92.198.243:8081/api/requests/approve', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        requestId: currentRequestId,
+                        reviewerEmail: reviewerEmail,
+                        comments: comments
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showAlert('요청이 승인되었고 AWS에 적용되었습니다!', 'success');
+                    closeReviewModal();
+                    loadRequests();
+                } else {
+                    showAlert('승인 처리에 실패했습니다: ' + result.message, 'error');
+                }
+            } catch (error) {
+                console.error('승인 처리 실패:', error);
+                showAlert('승인 처리 중 오류가 발생했습니다.', 'error');
+            }
+        }
+        
+        // 요청 거부
+        async function rejectRequest() {
+            if (!currentRequestId) return;
+            
+            const reviewerEmail = document.getElementById('reviewerEmail').value;
+            const comments = document.getElementById('reviewComments').value;
+            
+            if (!comments.trim()) {
+                showAlert('거부 사유를 입력해주세요.', 'error');
+                return;
+            }
+            
+            try {
+                const response = await fetch('http://54.92.198.243:8081/api/requests/reject', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        requestId: currentRequestId,
+                        reviewerEmail: reviewerEmail,
+                        comments: comments
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showAlert('요청이 거부되었습니다.', 'success');
+                    closeReviewModal();
+                    loadRequests();
+                } else {
+                    showAlert('거부 처리에 실패했습니다: ' + result.message, 'error');
+                }
+            } catch (error) {
+                console.error('거부 처리 실패:', error);
+                showAlert('거부 처리 중 오류가 발생했습니다.', 'error');
+            }
+        }
+        
+        // 상태 텍스트 변환
+        function getStatusText(status) {
+            const statusMap = {
+                'PENDING': '대기중',
+                'APPROVED': '승인됨',
+                'REJECTED': '거부됨'
+            };
+            return statusMap[status] || status;
+        }
+        
+        // 알림 표시
+        function showAlert(message, type) {
+            const alertContainer = document.getElementById('alert-container');
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.textContent = message;
+            
+            alertContainer.appendChild(alertDiv);
+            
+            setTimeout(() => {
+                alertDiv.remove();
+            }, 5000);
+        }
+        
+        // 모달 외부 클릭 시 닫기
+        window.onclick = function(event) {
+            const modal = document.getElementById('review-modal');
+            if (event.target === modal) {
+                closeReviewModal();
+            }
+        }
+    </script>
+</body>
+</html>

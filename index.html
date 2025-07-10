@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🛡️ AWS Security Group Manager - Amazon Q Demo</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 1s ease-out;
+        }
+        
+        .container {
+            text-align: center;
+            max-width: 900px;
+            padding: 2rem;
+        }
+        
+        .logo {
+            font-size: 6rem;
+            margin-bottom: 1rem;
+            animation: pulse 2s ease-in-out infinite;
+            text-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+        
+        .title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            text-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            animation: slideInUp 1s ease-out;
+        }
+        
+        .subtitle {
+            font-size: 1.6rem;
+            margin-bottom: 3rem;
+            opacity: 0.9;
+            animation: slideInUp 1s ease-out 0.3s both;
+        }
+        
+        .buttons {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 4rem;
+        }
+        
+        .btn {
+            padding: 1.2rem 2.5rem;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+            animation: slideInUp 1s ease-out 0.6s both;
+            display: inline-block;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+        
+        .btn:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+        
+        .feature {
+            background: rgba(255,255,255,0.15);
+            padding: 2rem;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            animation: slideInUp 1s ease-out 0.9s both;
+            transition: all 0.3s ease;
+        }
+        
+        .feature:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            background: rgba(255,255,255,0.2);
+        }
+        
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .feature-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 0.8rem;
+        }
+        
+        .feature-desc {
+            font-size: 1rem;
+            opacity: 0.9;
+            line-height: 1.5;
+        }
+        
+        .status {
+            background: rgba(255,255,255,0.15);
+            padding: 2rem;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            animation: slideInUp 1s ease-out 1.2s both;
+            margin-bottom: 2rem;
+        }
+        
+        .status-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+        
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+        
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem;
+            background: rgba(255,255,255,0.1);
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+        
+        .status-online {
+            color: #4ade80;
+            font-weight: 600;
+        }
+        
+        .workshop-info {
+            background: linear-gradient(45deg, rgba(254,107,139,0.2) 30%, rgba(255,142,83,0.2) 90%);
+            padding: 2rem;
+            border-radius: 15px;
+            border: 2px solid rgba(255,255,255,0.3);
+            animation: slideInUp 1s ease-out 1.5s both;
+        }
+        
+        .workshop-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        
+        .workshop-desc {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            opacity: 0.95;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .logo {
+                font-size: 4rem;
+            }
+            
+            .title {
+                font-size: 2.5rem;
+            }
+            
+            .subtitle {
+                font-size: 1.3rem;
+            }
+            
+            .buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            .container {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">🛡️</div>
+        <h1 class="title">AWS Security Group Manager</h1>
+        <p class="subtitle">Amazon Q가 1시간 만에 개발한 엔터프라이즈급 웹 애플리케이션</p>
+        
+        <div class="buttons">
+            <a href="/demo.html" class="btn btn-primary">📱 완전한 데모 보기</a>
+            <a href="http://54.92.198.243:3001/frontend-static.html" class="btn btn-secondary" target="_blank">⚛️ React Frontend</a>
+            <a href="http://54.92.198.243:8081/api/test" class="btn btn-secondary" target="_blank">🔧 Backend API</a>
+        </div>
+        
+        <div class="buttons" style="margin-top: 1rem;">
+            <a href="/sg-manager.html" class="btn btn-secondary" target="_blank">🛡️ Security Group 관리</a>
+            <a href="/requests-manager.html" class="btn btn-secondary" target="_blank">📋 요청 관리</a>
+            <a href="/network-visualization.html" class="btn btn-secondary" target="_blank">🌐 네트워크 시각화</a>
+        </div>
+        
+        <div class="features">
+            <div class="feature">
+                <div class="feature-icon">📊</div>
+                <div class="feature-title">실시간 대시보드</div>
+                <div class="feature-desc">Security Group 현황과 통계를 실시간으로 모니터링하고 시각화합니다</div>
+            </div>
+            
+            <div class="feature">
+                <div class="feature-icon">🔐</div>
+                <div class="feature-title">Security Group 관리</div>
+                <div class="feature-desc">AWS와 실시간 동기화하여 안전하고 효율적으로 관리합니다</div>
+            </div>
+            
+            <div class="feature">
+                <div class="feature-icon">👥</div>
+                <div class="feature-title">승인 워크플로우</div>
+                <div class="feature-desc">사용자 요청 → 관리자 승인 → 자동 적용의 체계적 프로세스</div>
+            </div>
+            
+            <div class="feature">
+                <div class="feature-icon">🌐</div>
+                <div class="feature-title">네트워크 시각화</div>
+                <div class="feature-desc">인터랙티브 그래프로 복잡한 네트워크 관계를 직관적으로 표현</div>
+            </div>
+        </div>
+        
+        <div class="status">
+            <div class="status-title">🔍 서비스 상태</div>
+            <div class="status-grid">
+                <div class="status-item">
+                    <span>데모 페이지</span>
+                    <span class="status-online">● 온라인</span>
+                </div>
+                <div class="status-item">
+                    <span>Backend API</span>
+                    <span class="status-online">● 온라인</span>
+                </div>
+                <div class="status-item">
+                    <span>MongoDB</span>
+                    <span class="status-online">● 온라인</span>
+                </div>
+                <div class="status-item">
+                    <span>React Frontend</span>
+                    <span class="status-online">● 온라인</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="workshop-info">
+            <div class="workshop-title">💡 Workshop 참가자 안내</div>
+            <div class="workshop-desc">
+                위 버튼들을 클릭하여 Amazon Q가 단 1시간 만에 개발한 완전한 엔터프라이즈급 애플리케이션을 체험해보세요!<br><br>
+                <strong>🚀 모든 서비스가 실시간으로 작동하며, 실제 프로덕션 환경과 동일한 수준의 품질을 제공합니다.</strong>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

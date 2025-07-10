@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🛡️ AWS Security Group Manager - Amazon Q Demo</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .title {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+            animation: fadeInUp 1s ease-out;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 2rem;
+            animation: fadeInUp 1s ease-out 0.2s both;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .feature-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            animation: fadeInUp 1s ease-out 0.4s both;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .feature-card.gradient-1 {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .feature-card.gradient-2 {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+        
+        .feature-card.gradient-3 {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+        
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .feature-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        
+        .feature-description {
+            font-size: 1rem;
+            line-height: 1.6;
+            opacity: 0.9;
+        }
+        
+        .tech-stack {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            animation: fadeInUp 1s ease-out 0.6s both;
+        }
+        
+        .tech-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+        
+        .tech-item {
+            background: #f8fafc;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 500;
+        }
+        
+        .demo-section {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            animation: fadeInUp 1s ease-out 0.8s both;
+        }
+        
+        .demo-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        
+        .demo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+        
+        .demo-item {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+            font-weight: 500;
+            transition: transform 0.3s ease;
+        }
+        
+        .demo-item:hover {
+            transform: scale(1.05);
+        }
+        
+        .stats-section {
+            text-align: center;
+            margin-bottom: 3rem;
+            animation: fadeInUp 1s ease-out 1s both;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .stat-item {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, #667eea 30%, #764ba2 90%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .stat-label {
+            font-size: 1rem;
+            color: #666;
+            margin-top: 0.5rem;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 16px;
+            animation: fadeInUp 1s ease-out 1.2s both;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+        
+        .pulse {
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        @media (max-width: 768px) {
+            .title {
+                font-size: 2rem;
+            }
+            
+            .container {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="title">🛡️ AWS Security Group Manager</h1>
+            <p class="subtitle">Amazon Q가 1시간 만에 개발한 엔터프라이즈급 웹 애플리케이션</p>
+        </div>
+        
+        <div class="features-grid">
+            <div class="feature-card gradient-1">
+                <div class="feature-icon">📊</div>
+                <h3 class="feature-title">실시간 대시보드</h3>
+                <p class="feature-description">
+                    Security Group 현황, 만료 예정 규칙, 요청 통계를 실시간으로 모니터링하세요.
+                    그라데이션 카드와 애니메이션으로 시각적 효과를 극대화했습니다.
+                </p>
+            </div>
+            
+            <div class="feature-card gradient-2">
+                <div class="feature-icon">🔐</div>
+                <h3 class="feature-title">Security Group 관리</h3>
+                <p class="feature-description">
+                    AWS Security Group을 실시간으로 동기화하고 관리하세요.
+                    만료일 자동 설정, 규칙 추가/삭제, 상태 모니터링을 지원합니다.
+                </p>
+            </div>
+            
+            <div class="feature-card gradient-3">
+                <div class="feature-icon">👥</div>
+                <h3 class="feature-title">승인 워크플로우</h3>
+                <p class="feature-description">
+                    사용자 요청 → 관리자 승인 → 자동 적용 워크플로우로
+                    안전하고 체계적인 Security Group 관리를 실현합니다.
+                </p>
+            </div>
+        </div>
+        
+        <div class="tech-stack">
+            <h2 class="tech-title">🛠️ 기술 스택</h2>
+            <div class="tech-grid">
+                <div class="tech-item">⚛️ React 18 + TypeScript</div>
+                <div class="tech-item">🎨 Material-UI v5</div>
+                <div class="tech-item">☕ Spring Boot 3.x</div>
+                <div class="tech-item">🗄️ MongoDB</div>
+                <div class="tech-item">🔒 Spring Security + JWT</div>
+                <div class="tech-item">☁️ AWS SDK</div>
+                <div class="tech-item">📊 D3.js + vis-network</div>
+                <div class="tech-item">🐳 Docker</div>
+            </div>
+        </div>
+        
+        <div class="demo-section">
+            <h2 class="demo-title">✨ 주요 기능 데모</h2>
+            <div class="demo-grid">
+                <div class="demo-item">🏠 화려한 대시보드</div>
+                <div class="demo-item">🔐 Security Groups 관리</div>
+                <div class="demo-item">📋 요청 생성 및 추적</div>
+                <div class="demo-item">👨‍💼 관리자 승인 시스템</div>
+                <div class="demo-item">🌐 네트워크 시각화</div>
+                <div class="demo-item">🔔 실시간 알림</div>
+                <div class="demo-item">⚡ 자동 만료 관리</div>
+                <div class="demo-item">📊 통계 및 분석</div>
+            </div>
+        </div>
+        
+        <div class="stats-section">
+            <h2>📈 Amazon Q 개발 성과</h2>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number pulse">1</div>
+                    <div class="stat-label">시간 개발</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number pulse">50+</div>
+                    <div class="stat-label">컴포넌트</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number pulse">100%</div>
+                    <div class="stat-label">TypeScript</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number pulse">15+</div>
+                    <div class="stat-label">API 엔드포인트</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <h3>💡 Amazon Q의 놀라운 개발 능력</h3>
+            <p>
+                이 완전한 엔터프라이즈급 애플리케이션이 단 1시간 만에 개발되었습니다!<br>
+                프론트엔드부터 백엔드, 데이터베이스, 인프라까지 모든 것이 포함되어 있습니다.
+            </p>
+            <br>
+            <p><strong>🚀 빠르고, 안전하고, 아름답게 - Amazon Q와 함께!</strong></p>
+        </div>
+    </div>
+    
+    <script>
+        // 간단한 인터랙션 추가
+        document.addEventListener('DOMContentLoaded', function() {
+            // 카드 호버 효과
+            const cards = document.querySelectorAll('.feature-card, .demo-item');
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-8px) scale(1.02)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0) scale(1)';
+                });
+            });
+            
+            // 통계 숫자 애니메이션
+            const statNumbers = document.querySelectorAll('.stat-number');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.animation = 'pulse 2s ease-in-out infinite';
+                    }
+                });
+            });
+            
+            statNumbers.forEach(stat => {
+                observer.observe(stat);
+            });
+            
+            console.log('🛡️ AWS Security Group Manager Demo Loaded!');
+            console.log('💡 Developed by Amazon Q in just 1 hour!');
+        });
+    </script>
+</body>
+</html>

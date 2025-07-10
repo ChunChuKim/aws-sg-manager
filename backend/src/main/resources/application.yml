@@ -1,0 +1,79 @@
+spring:
+  application:
+    name: aws-security-group-manager
+  
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/sgmanager
+      auto-index-creation: true
+  
+  mail:
+    host: ${MAIL_HOST:smtp.gmail.com}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_PASSWORD:}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
+# AWS 설정
+aws:
+  accessKeyId: ${AWS_ACCESS_KEY_ID:}
+  secretAccessKey: ${AWS_SECRET_ACCESS_KEY:}
+  region: ${AWS_REGION:us-east-1}
+
+# JWT 설정
+app:
+  jwt:
+    secret: ${JWT_SECRET:mySecretKey}
+    expiration: 86400000 # 24시간 (밀리초)
+  base-url: ${APP_BASE_URL:http://localhost:3000}
+
+# 알림 설정
+notification:
+  slack:
+    webhook: ${SLACK_WEBHOOK_URL:}
+  email:
+    from: ${NOTIFICATION_EMAIL_FROM:noreply@sgmanager.com}
+    admin: ${ADMIN_EMAIL:admin@sgmanager.com}
+
+# 로깅 설정
+logging:
+  level:
+    com.aws.sgmanager: DEBUG
+    org.springframework.security: DEBUG
+    org.springframework.web: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+  file:
+    name: logs/sgmanager.log
+
+# 액추에이터 설정
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: when-authorized
+
+# 스케줄러 설정
+spring.quartz:
+  job-store-type: memory
+  properties:
+    org:
+      quartz:
+        scheduler:
+          instanceName: SGManagerScheduler
+        threadPool:
+          threadCount: 5
