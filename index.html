@@ -3,318 +3,770 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🛡️ AWS Security Group Manager - Amazon Q Demo</title>
+    <title>AWS Security Group Manager - Enterprise Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
             font-family: 'Inter', sans-serif;
+            background: #f8fafc;
+            color: #1e293b;
+            line-height: 1.6;
+        }
+
+        .header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
             color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            animation: fadeIn 1s ease-out;
+            padding: 1rem 0;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
-        
-        .container {
-            text-align: center;
-            max-width: 900px;
-            padding: 2rem;
-        }
-        
-        .logo {
-            font-size: 6rem;
-            margin-bottom: 1rem;
-            animation: pulse 2s ease-in-out infinite;
-            text-shadow: 0 4px 8px rgba(0,0,0,0.3);
-        }
-        
-        .title {
-            font-size: 3.5rem;
-            font-weight: 800;
-            margin-bottom: 1rem;
-            text-shadow: 0 4px 8px rgba(0,0,0,0.3);
-            animation: slideInUp 1s ease-out;
-        }
-        
-        .subtitle {
-            font-size: 1.6rem;
-            margin-bottom: 3rem;
-            opacity: 0.9;
-            animation: slideInUp 1s ease-out 0.3s both;
-        }
-        
-        .buttons {
-            display: flex;
-            gap: 2rem;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-bottom: 4rem;
-        }
-        
-        .btn {
-            padding: 1.2rem 2.5rem;
-            border: none;
-            border-radius: 15px;
-            font-size: 1.2rem;
-            font-weight: 600;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
-            animation: slideInUp 1s ease-out 0.6s both;
-            display: inline-block;
-        }
-        
-        .btn-primary {
-            background: linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%);
-            color: white;
-        }
-        
-        .btn-secondary {
-            background: rgba(255,255,255,0.2);
-            color: white;
-            backdrop-filter: blur(10px);
-            border: 2px solid rgba(255,255,255,0.3);
-        }
-        
-        .btn:hover {
-            transform: translateY(-5px) scale(1.05);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-        }
-        
-        .features {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 2rem;
-            margin-bottom: 4rem;
-        }
-        
-        .feature {
-            background: rgba(255,255,255,0.15);
-            padding: 2rem;
-            border-radius: 15px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.2);
-            animation: slideInUp 1s ease-out 0.9s both;
-            transition: all 0.3s ease;
-        }
-        
-        .feature:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
-            background: rgba(255,255,255,0.2);
-        }
-        
-        .feature-icon {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-        }
-        
-        .feature-title {
-            font-size: 1.3rem;
-            font-weight: 700;
-            margin-bottom: 0.8rem;
-        }
-        
-        .feature-desc {
-            font-size: 1rem;
-            opacity: 0.9;
-            line-height: 1.5;
-        }
-        
-        .status {
-            background: rgba(255,255,255,0.15);
-            padding: 2rem;
-            border-radius: 15px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.2);
-            animation: slideInUp 1s ease-out 1.2s both;
-            margin-bottom: 2rem;
-        }
-        
-        .status-title {
-            font-size: 1.4rem;
-            font-weight: 700;
-            margin-bottom: 1.5rem;
-        }
-        
-        .status-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-        }
-        
-        .status-item {
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0.8rem;
-            background: rgba(255,255,255,0.1);
-            border-radius: 8px;
-            font-size: 1rem;
         }
-        
-        .status-online {
-            color: #4ade80;
-            font-weight: 600;
-        }
-        
-        .workshop-info {
-            background: linear-gradient(45deg, rgba(254,107,139,0.2) 30%, rgba(255,142,83,0.2) 90%);
-            padding: 2rem;
-            border-radius: 15px;
-            border: 2px solid rgba(255,255,255,0.3);
-            animation: slideInUp 1s ease-out 1.5s both;
-        }
-        
-        .workshop-title {
-            font-size: 1.3rem;
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.5rem;
             font-weight: 700;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: opacity 0.2s;
+        }
+
+        .nav-links a:hover {
+            opacity: 0.8;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .dashboard-header {
+            margin-bottom: 2rem;
+        }
+
+        .dashboard-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .dashboard-subtitle {
+            color: #64748b;
+            font-size: 1.1rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            border: 1px solid #e2e8f0;
+            transition: all 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.15);
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 1rem;
         }
-        
-        .workshop-desc {
+
+        .stat-title {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .stat-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-change {
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .stat-change.positive {
+            color: #059669;
+        }
+
+        .stat-change.negative {
+            color: #dc2626;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .content-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .card-content {
+            padding: 1.5rem;
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .action-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            border: 1px solid #e2e8f0;
+            text-align: center;
+            transition: all 0.2s;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .action-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.15);
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .action-icon {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 1rem;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .action-title {
             font-size: 1.1rem;
-            line-height: 1.6;
-            opacity: 0.95;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
         }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+
+        .action-desc {
+            font-size: 0.875rem;
+            color: #64748b;
         }
-        
-        @keyframes slideInUp {
-            from {
-                opacity: 0;
-                transform: translateY(50px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+
+        .recent-activity {
+            max-height: 400px;
+            overflow-y: auto;
         }
-        
-        @keyframes pulse {
-            0%, 100% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.1);
-            }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid #f1f5f9;
         }
-        
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            color: white;
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-title {
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+
+        .activity-desc {
+            font-size: 0.875rem;
+            color: #64748b;
+        }
+
+        .activity-time {
+            font-size: 0.75rem;
+            color: #94a3b8;
+        }
+
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .status-active {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.2s;
+            border: none;
+            cursor: pointer;
+            font-size: 0.875rem;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5a67d8;
+        }
+
+        .btn-secondary {
+            background: #f1f5f9;
+            color: #475569;
+        }
+
+        .btn-secondary:hover {
+            background: #e2e8f0;
+        }
+
         @media (max-width: 768px) {
-            .logo {
-                font-size: 4rem;
-            }
-            
-            .title {
-                font-size: 2.5rem;
-            }
-            
-            .subtitle {
-                font-size: 1.3rem;
-            }
-            
-            .buttons {
+            .header-content {
                 flex-direction: column;
-                align-items: center;
+                gap: 1rem;
             }
-            
-            .btn {
-                width: 100%;
-                max-width: 300px;
+
+            .nav-links {
+                gap: 1rem;
             }
-            
-            .container {
-                padding: 1rem;
+
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .quick-actions {
+                grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
 <body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <span class="material-icons">security</span>
+                AWS Security Group Manager
+            </div>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="/">Dashboard</a></li>
+                    <li><a href="/sg-manager.html">Security Groups</a></li>
+                    <li><a href="/requests-manager.html">Requests</a></li>
+                    <li><a href="/network-visualization-enhanced.html">Network</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
     <div class="container">
-        <div class="logo">🛡️</div>
-        <h1 class="title">AWS Security Group Manager</h1>
-        <p class="subtitle">Amazon Q가 1시간 만에 개발한 엔터프라이즈급 웹 애플리케이션</p>
-        
-        <div class="buttons">
-            <a href="/demo.html" class="btn btn-primary">📱 완전한 데모 보기</a>
-            <a href="http://54.92.198.243:3001/frontend-static.html" class="btn btn-secondary" target="_blank">⚛️ React Frontend</a>
-            <a href="http://54.92.198.243:8081/api/test" class="btn btn-secondary" target="_blank">🔧 Backend API</a>
+        <div class="dashboard-header">
+            <h1 class="dashboard-title">Security Group Dashboard</h1>
+            <p class="dashboard-subtitle">Monitor and manage your AWS Security Groups with enterprise-grade controls</p>
         </div>
-        
-        <div class="buttons" style="margin-top: 1rem;">
-            <a href="/sg-manager.html" class="btn btn-secondary" target="_blank">🛡️ Security Group 관리</a>
-            <a href="/requests-manager.html" class="btn btn-secondary" target="_blank">📋 요청 관리</a>
-            <a href="/network-visualization.html" class="btn btn-secondary" target="_blank">🌐 네트워크 시각화</a>
-        </div>
-        
-        <div class="features">
-            <div class="feature">
-                <div class="feature-icon">📊</div>
-                <div class="feature-title">실시간 대시보드</div>
-                <div class="feature-desc">Security Group 현황과 통계를 실시간으로 모니터링하고 시각화합니다</div>
-            </div>
-            
-            <div class="feature">
-                <div class="feature-icon">🔐</div>
-                <div class="feature-title">Security Group 관리</div>
-                <div class="feature-desc">AWS와 실시간 동기화하여 안전하고 효율적으로 관리합니다</div>
-            </div>
-            
-            <div class="feature">
-                <div class="feature-icon">👥</div>
-                <div class="feature-title">승인 워크플로우</div>
-                <div class="feature-desc">사용자 요청 → 관리자 승인 → 자동 적용의 체계적 프로세스</div>
-            </div>
-            
-            <div class="feature">
-                <div class="feature-icon">🌐</div>
-                <div class="feature-title">네트워크 시각화</div>
-                <div class="feature-desc">인터랙티브 그래프로 복잡한 네트워크 관계를 직관적으로 표현</div>
-            </div>
-        </div>
-        
-        <div class="status">
-            <div class="status-title">🔍 서비스 상태</div>
-            <div class="status-grid">
-                <div class="status-item">
-                    <span>데모 페이지</span>
-                    <span class="status-online">● 온라인</span>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-title">Total Security Groups</span>
+                    <div class="stat-icon" style="background: #667eea;">
+                        <span class="material-icons">security</span>
+                    </div>
                 </div>
-                <div class="status-item">
-                    <span>Backend API</span>
-                    <span class="status-online">● 온라인</span>
+                <div class="stat-value" id="totalSGs">
+                    <div class="loading"></div>
                 </div>
-                <div class="status-item">
-                    <span>MongoDB</span>
-                    <span class="status-online">● 온라인</span>
-                </div>
-                <div class="status-item">
-                    <span>React Frontend</span>
-                    <span class="status-online">● 온라인</span>
+                <div class="stat-change positive">
+                    <span class="material-icons" style="font-size: 1rem;">trending_up</span>
+                    <span>Active across all VPCs</span>
                 </div>
             </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-title">Pending Requests</span>
+                    <div class="stat-icon" style="background: #f59e0b;">
+                        <span class="material-icons">pending_actions</span>
+                    </div>
+                </div>
+                <div class="stat-value" id="pendingRequests">
+                    <div class="loading"></div>
+                </div>
+                <div class="stat-change" id="pendingChange">
+                    <span class="material-icons" style="font-size: 1rem;">schedule</span>
+                    <span>Awaiting approval</span>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-title">Expired Rules</span>
+                    <div class="stat-icon" style="background: #ef4444;">
+                        <span class="material-icons">warning</span>
+                    </div>
+                </div>
+                <div class="stat-value" id="expiredRules">
+                    <div class="loading"></div>
+                </div>
+                <div class="stat-change negative" id="expiredChange">
+                    <span class="material-icons" style="font-size: 1rem;">error</span>
+                    <span>Require attention</span>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-title">System Health</span>
+                    <div class="stat-icon" style="background: #10b981;">
+                        <span class="material-icons">health_and_safety</span>
+                    </div>
+                </div>
+                <div class="stat-value" id="systemHealth">
+                    <span class="status-indicator status-active" id="healthStatus">
+                        <span class="loading"></span>
+                    </span>
+                </div>
+                <div class="stat-change positive">
+                    <span class="material-icons" style="font-size: 1rem;">check_circle</span>
+                    <span>All systems operational</span>
+                </div>
+            </div>
         </div>
-        
-        <div class="workshop-info">
-            <div class="workshop-title">💡 Workshop 참가자 안내</div>
-            <div class="workshop-desc">
-                위 버튼들을 클릭하여 Amazon Q가 단 1시간 만에 개발한 완전한 엔터프라이즈급 애플리케이션을 체험해보세요!<br><br>
-                <strong>🚀 모든 서비스가 실시간으로 작동하며, 실제 프로덕션 환경과 동일한 수준의 품질을 제공합니다.</strong>
+
+        <div class="quick-actions">
+            <a href="/sg-manager.html" class="action-card">
+                <div class="action-icon" style="background: #667eea;">
+                    <span class="material-icons">security</span>
+                </div>
+                <div class="action-title">Manage Security Groups</div>
+                <div class="action-desc">View, search, and analyze security groups</div>
+            </a>
+
+            <a href="/requests-manager.html" class="action-card">
+                <div class="action-icon" style="background: #f59e0b;">
+                    <span class="material-icons">assignment</span>
+                </div>
+                <div class="action-title">Request Management</div>
+                <div class="action-desc">Create and approve security group changes</div>
+            </a>
+
+            <a href="/network-visualization-enhanced.html" class="action-card">
+                <div class="action-icon" style="background: #10b981;">
+                    <span class="material-icons">hub</span>
+                </div>
+                <div class="action-title">Network Visualization</div>
+                <div class="action-desc">Interactive network topology and analysis</div>
+            </a>
+
+            <a href="/audit-logs.html" class="action-card">
+                <div class="action-icon" style="background: #8b5cf6;">
+                    <span class="material-icons">history</span>
+                </div>
+                <div class="action-title">Audit Logs</div>
+                <div class="action-desc">Track all changes and activities</div>
+            </a>
+
+            <a href="/admin-settings.html" class="action-card">
+                <div class="action-icon" style="background: #f59e0b;">
+                    <span class="material-icons">settings</span>
+                </div>
+                <div class="action-title">Admin Settings</div>
+                <div class="action-desc">Manage users and workflows</div>
+            </a>
+        </div>
+
+        <div class="main-content">
+            <div class="content-card">
+                <div class="card-header">
+                    <h3 class="card-title">Recent Activity</h3>
+                    <button class="btn btn-secondary" onclick="refreshActivity()">
+                        <span class="material-icons" style="font-size: 1rem;">refresh</span>
+                        Refresh
+                    </button>
+                </div>
+                <div class="card-content">
+                    <div class="recent-activity" id="recentActivity">
+                        <div class="loading" style="margin: 2rem auto;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <div class="card-header">
+                    <h3 class="card-title">System Status</h3>
+                </div>
+                <div class="card-content">
+                    <div class="activity-item">
+                        <div class="activity-icon" style="background: #10b981;">
+                            <span class="material-icons">cloud</span>
+                        </div>
+                        <div class="activity-content">
+                            <div class="activity-title">AWS Connection</div>
+                            <div class="activity-desc" id="awsStatus">Checking...</div>
+                        </div>
+                        <span class="status-indicator status-active" id="awsStatusBadge">
+                            <div class="loading"></div>
+                        </span>
+                    </div>
+
+                    <div class="activity-item">
+                        <div class="activity-icon" style="background: #667eea;">
+                            <span class="material-icons">api</span>
+                        </div>
+                        <div class="activity-content">
+                            <div class="activity-title">API Server</div>
+                            <div class="activity-desc" id="apiStatus">Checking...</div>
+                        </div>
+                        <span class="status-indicator status-active" id="apiStatusBadge">
+                            <div class="loading"></div>
+                        </span>
+                    </div>
+
+                    <div class="activity-item">
+                        <div class="activity-icon" style="background: #f59e0b;">
+                            <span class="material-icons">storage</span>
+                        </div>
+                        <div class="activity-content">
+                            <div class="activity-title">Database</div>
+                            <div class="activity-desc" id="dbStatus">Checking...</div>
+                        </div>
+                        <span class="status-indicator status-active" id="dbStatusBadge">
+                            <div class="loading"></div>
+                        </span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+
+    <script>
+        // API 기본 URL
+        const API_BASE = 'http://localhost:8081/api';
+
+        // 페이지 로드 시 초기화
+        document.addEventListener('DOMContentLoaded', function() {
+            loadDashboardData();
+            loadSystemStatus();
+            loadRecentActivity();
+            
+            // 30초마다 데이터 새로고침
+            setInterval(loadDashboardData, 30000);
+        });
+
+        // 대시보드 데이터 로드
+        async function loadDashboardData() {
+            try {
+                const response = await fetch(`${API_BASE}/stats`);
+                const data = await response.json();
+                
+                document.getElementById('totalSGs').textContent = data.totalSecurityGroups || '0';
+                document.getElementById('pendingRequests').textContent = data.pendingRequests || '0';
+                document.getElementById('expiredRules').textContent = data.expiredRules || '0';
+                
+                // 상태에 따른 색상 변경
+                const pendingChange = document.getElementById('pendingChange');
+                if (data.pendingRequests > 0) {
+                    pendingChange.className = 'stat-change negative';
+                } else {
+                    pendingChange.className = 'stat-change positive';
+                }
+
+                const expiredChange = document.getElementById('expiredChange');
+                if (data.expiredRules > 0) {
+                    expiredChange.className = 'stat-change negative';
+                } else {
+                    expiredChange.className = 'stat-change positive';
+                }
+
+            } catch (error) {
+                console.error('Failed to load dashboard data:', error);
+                // 오류 시 기본값 표시
+                document.getElementById('totalSGs').textContent = '0';
+                document.getElementById('pendingRequests').textContent = '0';
+                document.getElementById('expiredRules').textContent = '0';
+            }
+        }
+
+        // 시스템 상태 확인
+        async function loadSystemStatus() {
+            try {
+                // API 서버 상태 확인
+                const healthResponse = await fetch(`${API_BASE}/health`);
+                const healthData = await healthResponse.json();
+                
+                document.getElementById('apiStatus').textContent = 'Connected - ' + (healthData.version || 'v2.0');
+                document.getElementById('apiStatusBadge').innerHTML = '<span class="material-icons" style="font-size: 1rem;">check_circle</span>Online';
+                document.getElementById('apiStatusBadge').className = 'status-indicator status-active';
+
+                // AWS 연결 상태
+                document.getElementById('awsStatus').textContent = healthData.aws?.status || 'Connected';
+                document.getElementById('awsStatusBadge').innerHTML = '<span class="material-icons" style="font-size: 1rem;">check_circle</span>Active';
+                document.getElementById('awsStatusBadge').className = 'status-indicator status-active';
+
+                // 데이터베이스 상태
+                document.getElementById('dbStatus').textContent = healthData.database?.status || 'Memory Store Active';
+                document.getElementById('dbStatusBadge').innerHTML = '<span class="material-icons" style="font-size: 1rem;">check_circle</span>Online';
+                document.getElementById('dbStatusBadge').className = 'status-indicator status-active';
+
+                // 전체 시스템 상태
+                document.getElementById('healthStatus').innerHTML = '<span class="material-icons" style="font-size: 1rem;">check_circle</span>Healthy';
+                document.getElementById('healthStatus').className = 'status-indicator status-active';
+
+            } catch (error) {
+                console.error('Failed to load system status:', error);
+                
+                // 오류 상태 표시
+                document.getElementById('apiStatus').textContent = 'Connection failed';
+                document.getElementById('apiStatusBadge').innerHTML = '<span class="material-icons" style="font-size: 1rem;">error</span>Offline';
+                document.getElementById('apiStatusBadge').className = 'status-indicator status-error';
+
+                document.getElementById('awsStatus').textContent = 'Not configured';
+                document.getElementById('awsStatusBadge').innerHTML = '<span class="material-icons" style="font-size: 1rem;">warning</span>Warning';
+                document.getElementById('awsStatusBadge').className = 'status-indicator status-pending';
+
+                document.getElementById('dbStatus').textContent = 'Memory mode';
+                document.getElementById('dbStatusBadge').innerHTML = '<span class="material-icons" style="font-size: 1rem;">info</span>Memory';
+                document.getElementById('dbStatusBadge').className = 'status-indicator status-pending';
+
+                document.getElementById('healthStatus').innerHTML = '<span class="material-icons" style="font-size: 1rem;">warning</span>Limited';
+                document.getElementById('healthStatus').className = 'status-indicator status-pending';
+            }
+        }
+
+        // 최근 활동 로드
+        async function loadRecentActivity() {
+            try {
+                const response = await fetch(`${API_BASE}/audit-logs?limit=10`);
+                const data = await response.json();
+                
+                const activityContainer = document.getElementById('recentActivity');
+                
+                if (data.logs && data.logs.length > 0) {
+                    activityContainer.innerHTML = data.logs.map(log => `
+                        <div class="activity-item">
+                            <div class="activity-icon" style="background: ${getActivityColor(log.action)};">
+                                <span class="material-icons">${getActivityIcon(log.action)}</span>
+                            </div>
+                            <div class="activity-content">
+                                <div class="activity-title">${log.action}</div>
+                                <div class="activity-desc">${log.details || log.resource}</div>
+                                <div class="activity-time">${formatTime(log.timestamp)}</div>
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    activityContainer.innerHTML = `
+                        <div class="activity-item">
+                            <div class="activity-icon" style="background: #94a3b8;">
+                                <span class="material-icons">info</span>
+                            </div>
+                            <div class="activity-content">
+                                <div class="activity-title">No recent activity</div>
+                                <div class="activity-desc">Start using the system to see activity logs here</div>
+                            </div>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Failed to load recent activity:', error);
+                document.getElementById('recentActivity').innerHTML = `
+                    <div class="activity-item">
+                        <div class="activity-icon" style="background: #ef4444;">
+                            <span class="material-icons">error</span>
+                        </div>
+                        <div class="activity-content">
+                            <div class="activity-title">Failed to load activity</div>
+                            <div class="activity-desc">Unable to connect to audit log service</div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // 활동 유형별 색상
+        function getActivityColor(action) {
+            const colors = {
+                'CREATE': '#10b981',
+                'UPDATE': '#f59e0b',
+                'DELETE': '#ef4444',
+                'APPROVE': '#667eea',
+                'REJECT': '#ef4444',
+                'VIEW': '#6b7280'
+            };
+            return colors[action] || '#6b7280';
+        }
+
+        // 활동 유형별 아이콘
+        function getActivityIcon(action) {
+            const icons = {
+                'CREATE': 'add_circle',
+                'UPDATE': 'edit',
+                'DELETE': 'delete',
+                'APPROVE': 'check_circle',
+                'REJECT': 'cancel',
+                'VIEW': 'visibility'
+            };
+            return icons[action] || 'info';
+        }
+
+        // 시간 포맷팅
+        function formatTime(timestamp) {
+            const date = new Date(timestamp);
+            const now = new Date();
+            const diff = now - date;
+            
+            if (diff < 60000) return 'Just now';
+            if (diff < 3600000) return Math.floor(diff / 60000) + ' minutes ago';
+            if (diff < 86400000) return Math.floor(diff / 3600000) + ' hours ago';
+            return Math.floor(diff / 86400000) + ' days ago';
+        }
+
+        // 활동 새로고침
+        function refreshActivity() {
+            loadRecentActivity();
+            loadDashboardData();
+        }
+
+        // 감사 로그 표시
+        function showAuditLogs() {
+            window.open('/audit-logs.html', '_blank');
+        }
+    </script>
 </body>
 </html>

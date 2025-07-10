@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🛡️ Security Group Manager - AWS Security Group Manager</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>Security Groups Manager - AWS Security Group Manager</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
         * {
@@ -12,588 +12,718 @@
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            min-height: 100vh;
+            background: #f8fafc;
+            color: #1e293b;
+            line-height: 1.6;
+        }
+
+        .main-navigation {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
         }
         
-        .app-bar {
-            background: linear-gradient(45deg, #1976d2 30%, #42a5f5 90%);
-            color: white;
-            padding: 1rem 2rem;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
             display: flex;
             align-items: center;
             justify-content: space-between;
+            padding: 1rem 2rem;
         }
         
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+        
+        .nav-menu {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            text-decoration: none;
+            color: white;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+        
+        .nav-item:hover {
+            background: rgba(255,255,255,0.1);
+            transform: translateY(-1px);
+        }
+        
+        .nav-item.active {
+            background: rgba(255,255,255,0.2);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .nav-user {
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            background: rgba(255,255,255,0.1);
+        }
+
         .container {
-            max-width: 1400px;
+            max-width: 1200px;
             margin: 0 auto;
             padding: 2rem;
         }
-        
-        .card {
-            background: white;
-            border-radius: 15px;
-            padding: 2rem;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+
+        .page-header {
             margin-bottom: 2rem;
         }
-        
-        .card-title {
-            font-size: 1.5rem;
+
+        .page-title {
+            font-size: 2rem;
             font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-subtitle {
+            color: #64748b;
+            font-size: 1.1rem;
+        }
+
+        .controls-section {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            border: 1px solid #e2e8f0;
+            margin-bottom: 2rem;
+        }
+
+        .controls-grid {
+            display: grid;
+            grid-template-columns: 1fr auto auto;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 3rem;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+        }
+
+        .filter-select {
+            padding: 0.75rem 1rem;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 1rem;
+            background: white;
+            min-width: 150px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.2s;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5a67d8;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: #f1f5f9;
+            color: #475569;
+        }
+
+        .btn-secondary:hover {
+            background: #e2e8f0;
+        }
+
+        .sg-grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .sg-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+            transition: all 0.2s;
+        }
+
+        .sg-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.15);
+        }
+
+        .sg-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .sg-title {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .sg-name {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .sg-id {
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.875rem;
+            color: #64748b;
+            background: #f1f5f9;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+        }
+
+        .sg-description {
+            color: #64748b;
+            margin-bottom: 1rem;
+        }
+
+        .sg-meta {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.875rem;
+            color: #64748b;
+        }
+
+        .sg-content {
+            padding: 1.5rem;
+        }
+
+        .rules-section {
             margin-bottom: 1.5rem;
-            color: #333;
+        }
+
+        .rules-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.75rem;
             display: flex;
             align-items: center;
             gap: 0.5rem;
         }
-        
-        .sg-grid {
+
+        .rules-list {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 2rem;
+            gap: 0.5rem;
         }
-        
-        .sg-card {
-            border: 2px solid #e0e0e0;
-            border-radius: 12px;
-            padding: 1.5rem;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-        
-        .sg-card:hover {
-            border-color: #1976d2;
-            box-shadow: 0 8px 25px rgba(25,118,210,0.15);
-            transform: translateY(-2px);
-        }
-        
-        .sg-header {
+
+        .rule-item {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            margin-bottom: 1rem;
-        }
-        
-        .sg-name {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: #333;
-        }
-        
-        .sg-id {
-            font-size: 0.9rem;
-            color: #666;
-            margin-bottom: 0.5rem;
-        }
-        
-        .sg-description {
-            color: #666;
-            margin-bottom: 1rem;
-            font-size: 0.9rem;
-        }
-        
-        .sg-stats {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1rem;
-            margin-bottom: 1rem;
-        }
-        
-        .stat-item {
-            text-align: center;
-            padding: 0.5rem;
-            background: #f8f9fa;
-            border-radius: 8px;
-        }
-        
-        .stat-number {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #1976d2;
-        }
-        
-        .stat-label {
-            font-size: 0.8rem;
-            color: #666;
-        }
-        
-        .status-badge {
-            padding: 0.25rem 0.75rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
-        }
-        
-        .status-active {
-            background: #e8f5e8;
-            color: #2e7d32;
-        }
-        
-        .status-expired {
-            background: #ffebee;
-            color: #c62828;
-        }
-        
-        .btn {
-            padding: 0.5rem 1rem;
-            border: none;
-            border-radius: 6px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin: 0.25rem;
-            font-size: 0.9rem;
-        }
-        
-        .btn-primary {
-            background: #1976d2;
-            color: white;
-        }
-        
-        .btn-outline {
-            background: transparent;
-            color: #1976d2;
-            border: 1px solid #1976d2;
-        }
-        
-        .btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-        }
-        
-        .rules-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 1rem;
-        }
-        
-        .rules-table th,
-        .rules-table td {
+            justify-content: space-between;
             padding: 0.75rem;
-            text-align: left;
-            border-bottom: 1px solid #e0e0e0;
+            background: #f8fafc;
+            border-radius: 6px;
+            border-left: 3px solid #667eea;
         }
-        
-        .rules-table th {
-            background: #f8f9fa;
-            font-weight: 600;
-            color: #333;
+
+        .rule-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
         }
-        
-        .protocol-chip {
-            background: #e3f2fd;
-            color: #1976d2;
+
+        .rule-protocol {
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.875rem;
+            background: #e2e8f0;
             padding: 0.25rem 0.5rem;
             border-radius: 4px;
-            font-size: 0.8rem;
-            font-weight: 600;
         }
-        
-        .cidr-chip {
-            background: #f3e5f5;
-            color: #7b1fa2;
-            padding: 0.25rem 0.5rem;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            margin: 0.1rem;
-            display: inline-block;
+
+        .rule-port {
+            font-weight: 500;
+            color: #1e293b;
         }
-        
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            z-index: 1000;
+
+        .rule-source {
+            color: #64748b;
+            font-size: 0.875rem;
         }
-        
-        .modal-content {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: white;
-            border-radius: 15px;
-            padding: 2rem;
-            max-width: 800px;
-            width: 90%;
-            max-height: 80vh;
-            overflow-y: auto;
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
         }
-        
+
+        .status-active {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-warning {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .sg-actions {
+            display: flex;
+            gap: 0.5rem;
+            padding: 1rem 1.5rem;
+            background: #f8fafc;
+            border-top: 1px solid #f1f5f9;
+        }
+
         .loading {
-            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             padding: 3rem;
         }
-        
+
         .spinner {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #1976d2;
-            border-radius: 50%;
             width: 40px;
             height: 40px;
+            border: 4px solid #f3f4f6;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
             animation: spin 1s linear infinite;
-            margin: 0 auto 1rem;
         }
-        
+
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-        
-        .search-box {
-            width: 100%;
-            padding: 1rem;
-            border: 2px solid #e0e0e0;
-            border-radius: 12px;
-            font-size: 1rem;
-            margin-bottom: 2rem;
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #64748b;
         }
-        
-        .search-box:focus {
-            outline: none;
-            border-color: #1976d2;
+
+        .empty-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
         }
-        
-        .filter-tabs {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-        
-        .filter-tab {
-            padding: 0.75rem 1.5rem;
-            border: 2px solid #e0e0e0;
-            border-radius: 25px;
-            background: white;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .filter-tab.active {
-            background: #1976d2;
-            color: white;
-            border-color: #1976d2;
+
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .nav-menu {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .controls-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .sg-meta {
+                flex-direction: column;
+                align-items: flex-start;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="app-bar">
-        <div style="display: flex; align-items: center; gap: 0.5rem;">
-            <span class="material-icons">security</span>
-            <span>Security Group Manager</span>
-        </div>
-        <div>
-            <button onclick="location.href='http://54.92.198.243:8082/'" class="btn" style="background: rgba(255,255,255,0.2); color: white;">
-                <span class="material-icons" style="vertical-align: middle;">home</span>
-                홈으로
-            </button>
-        </div>
-    </div>
-
-    <div class="container">
-        <!-- 검색 및 필터 -->
-        <div class="card">
-            <input type="text" class="search-box" id="search-box" placeholder="🔍 Security Group 이름, ID, 또는 설명으로 검색...">
-            
-            <div class="filter-tabs">
-                <div class="filter-tab active" onclick="setFilter('all')">전체</div>
-                <div class="filter-tab" onclick="setFilter('active')">활성</div>
-                <div class="filter-tab" onclick="setFilter('expired')">만료된 규칙 있음</div>
-                <div class="filter-tab" onclick="setFilter('recent')">최근 수정</div>
-            </div>
-        </div>
-        
-        <!-- Security Groups 목록 -->
-        <div class="card">
-            <div class="card-title">
+    <nav class="main-navigation">
+        <div class="nav-container">
+            <div class="nav-brand">
                 <span class="material-icons">security</span>
-                Security Groups
-                <button onclick="loadSecurityGroups()" class="btn btn-primary" style="margin-left: auto;">
-                    <span class="material-icons" style="vertical-align: middle;">refresh</span>
-                    새로고침
-                </button>
+                <span class="brand-text">AWS Security Group Manager</span>
             </div>
-            
-            <div id="sg-container">
-                <div class="loading">
-                    <div class="spinner"></div>
-                    <p>Security Groups를 불러오는 중...</p>
+            <div class="nav-menu">
+                <a href="/index.html" class="nav-item">
+                    <span class="material-icons">dashboard</span>
+                    <span>Dashboard</span>
+                </a>
+                <a href="/sg-manager.html" class="nav-item active">
+                    <span class="material-icons">security</span>
+                    <span>Security Groups</span>
+                </a>
+                <a href="/requests-manager.html" class="nav-item">
+                    <span class="material-icons">assignment</span>
+                    <span>Requests</span>
+                </a>
+                <a href="/network-visualization-enhanced.html" class="nav-item">
+                    <span class="material-icons">hub</span>
+                    <span>Network</span>
+                </a>
+                <a href="/audit-logs.html" class="nav-item">
+                    <span class="material-icons">history</span>
+                    <span>Audit Logs</span>
+                </a>
+                <a href="/admin-settings.html" class="nav-item">
+                    <span class="material-icons">settings</span>
+                    <span>Settings</span>
+                </a>
+            </div>
+            <div class="nav-user">
+                <div class="user-info">
+                    <span class="material-icons">account_circle</span>
+                    <span>Admin</span>
                 </div>
             </div>
         </div>
-    </div>
+    </nav>
 
-    <!-- Security Group 상세 모달 -->
-    <div id="sg-detail-modal" class="modal">
-        <div class="modal-content">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-                <h2 id="modal-title">Security Group 상세</h2>
-                <button onclick="closeSGModal()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer;">×</button>
+    <div class="container">
+        <div class="page-header">
+            <h1 class="page-title">Security Groups</h1>
+            <p class="page-subtitle">Manage and monitor your AWS Security Groups</p>
+        </div>
+
+        <div class="controls-section">
+            <div class="controls-grid">
+                <div class="search-box">
+                    <span class="material-icons search-icon">search</span>
+                    <input type="text" class="search-input" placeholder="Search security groups..." id="searchInput">
+                </div>
+                <select class="filter-select" id="vpcFilter">
+                    <option value="">All VPCs</option>
+                </select>
+                <button class="btn btn-primary" onclick="refreshSecurityGroups()">
+                    <span class="material-icons">refresh</span>
+                    Refresh
+                </button>
             </div>
-            
-            <div id="sg-detail-content">
-                <!-- 상세 내용이 여기에 로드됩니다 -->
+        </div>
+
+        <div id="securityGroupsContainer">
+            <div class="loading">
+                <div class="spinner"></div>
             </div>
         </div>
     </div>
 
     <script>
+        const API_BASE = 'http://localhost:8081/api';
         let allSecurityGroups = [];
-        let currentFilter = 'all';
-        
+        let filteredSecurityGroups = [];
+
         // 페이지 로드 시 초기화
         document.addEventListener('DOMContentLoaded', function() {
             loadSecurityGroups();
-            
-            // 검색 이벤트
-            document.getElementById('search-box').addEventListener('input', filterSecurityGroups);
+            setupEventListeners();
         });
-        
+
+        // 이벤트 리스너 설정
+        function setupEventListeners() {
+            const searchInput = document.getElementById('searchInput');
+            const vpcFilter = document.getElementById('vpcFilter');
+
+            searchInput.addEventListener('input', debounce(filterSecurityGroups, 300));
+            vpcFilter.addEventListener('change', filterSecurityGroups);
+        }
+
+        // 디바운스 함수
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
         // Security Groups 로드
         async function loadSecurityGroups() {
             try {
-                const response = await fetch('http://54.92.198.243:8081/api/security-groups');
+                showLoading();
+                const response = await fetch(`${API_BASE}/security-groups`);
                 const data = await response.json();
                 
-                allSecurityGroups = data.data;
-                displaySecurityGroups(allSecurityGroups);
-                
-            } catch (error) {
-                console.error('Security Groups 로드 실패:', error);
-                document.getElementById('sg-container').innerHTML = 
-                    '<p style="text-align: center; color: #f44336;">Security Groups를 불러올 수 없습니다.</p>';
-            }
-        }
-        
-        // Security Groups 표시
-        function displaySecurityGroups(securityGroups) {
-            const container = document.getElementById('sg-container');
-            
-            if (securityGroups.length === 0) {
-                container.innerHTML = '<p style="text-align: center; color: #666;">조건에 맞는 Security Group이 없습니다.</p>';
-                return;
-            }
-            
-            container.innerHTML = `
-                <div class="sg-grid">
-                    ${securityGroups.map(sg => `
-                        <div class="sg-card" onclick="showSGDetail('${sg.id}')">
-                            <div class="sg-header">
-                                <div>
-                                    <div class="sg-name">${sg.groupName}</div>
-                                    <div class="sg-id">${sg.id}</div>
-                                </div>
-                                <span class="status-badge status-${sg.hasExpiredRules ? 'expired' : 'active'}">
-                                    ${sg.hasExpiredRules ? '만료 규칙 있음' : '정상'}
-                                </span>
-                            </div>
-                            
-                            <div class="sg-description">${sg.description}</div>
-                            
-                            <div class="sg-stats">
-                                <div class="stat-item">
-                                    <div class="stat-number">${sg.inboundRules ? sg.inboundRules.length : 0}</div>
-                                    <div class="stat-label">Inbound</div>
-                                </div>
-                                <div class="stat-item">
-                                    <div class="stat-number">${sg.outboundRules ? sg.outboundRules.length : 0}</div>
-                                    <div class="stat-label">Outbound</div>
-                                </div>
-                                <div class="stat-item">
-                                    <div class="stat-number">${sg.rulesCount}</div>
-                                    <div class="stat-label">Total</div>
-                                </div>
-                            </div>
-                            
-                            <div style="display: flex; gap: 0.5rem;">
-                                <button class="btn btn-primary" onclick="event.stopPropagation(); showSGDetail('${sg.id}')">
-                                    <span class="material-icons" style="vertical-align: middle; font-size: 1rem;">visibility</span>
-                                    상세보기
-                                </button>
-                                <button class="btn btn-outline" onclick="event.stopPropagation(); editSG('${sg.id}')">
-                                    <span class="material-icons" style="vertical-align: middle; font-size: 1rem;">edit</span>
-                                    편집
-                                </button>
-                            </div>
-                        </div>
-                    `).join('')}
-                </div>
-            `;
-        }
-        
-        // Security Group 상세 보기
-        async function showSGDetail(sgId) {
-            try {
-                const response = await fetch(`http://54.92.198.243:8081/api/security-groups/${sgId}`);
-                const result = await response.json();
-                
-                if (!result.data) {
-                    alert('Security Group 정보를 불러올 수 없습니다.');
-                    return;
+                if (data.data) {
+                    allSecurityGroups = data.data;
+                    filteredSecurityGroups = [...allSecurityGroups];
+                    populateVpcFilter();
+                    renderSecurityGroups();
+                } else {
+                    showError('Failed to load security groups');
                 }
-                
-                const sg = result.data;
-                
-                document.getElementById('modal-title').textContent = sg.groupName;
-                document.getElementById('sg-detail-content').innerHTML = `
-                    <div style="margin-bottom: 2rem;">
-                        <h3>기본 정보</h3>
-                        <table style="width: 100%; margin-top: 1rem;">
-                            <tr><td style="font-weight: 600; padding: 0.5rem;">Group ID:</td><td style="padding: 0.5rem;">${sg.id}</td></tr>
-                            <tr><td style="font-weight: 600; padding: 0.5rem;">Group Name:</td><td style="padding: 0.5rem;">${sg.groupName}</td></tr>
-                            <tr><td style="font-weight: 600; padding: 0.5rem;">Description:</td><td style="padding: 0.5rem;">${sg.description}</td></tr>
-                            <tr><td style="font-weight: 600; padding: 0.5rem;">VPC ID:</td><td style="padding: 0.5rem;">${sg.vpcId}</td></tr>
-                            <tr><td style="font-weight: 600; padding: 0.5rem;">Created:</td><td style="padding: 0.5rem;">${new Date(sg.createdTime).toLocaleString('ko-KR')}</td></tr>
-                            <tr><td style="font-weight: 600; padding: 0.5rem;">Last Modified:</td><td style="padding: 0.5rem;">${new Date(sg.lastModified).toLocaleString('ko-KR')}</td></tr>
-                        </table>
-                    </div>
-                    
-                    <div style="margin-bottom: 2rem;">
-                        <h3>Inbound Rules (${sg.inboundRules ? sg.inboundRules.length : 0})</h3>
-                        ${sg.inboundRules && sg.inboundRules.length > 0 ? `
-                            <table class="rules-table">
-                                <thead>
-                                    <tr>
-                                        <th>Protocol</th>
-                                        <th>Port Range</th>
-                                        <th>Source</th>
-                                        <th>Description</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    ${sg.inboundRules.map(rule => `
-                                        <tr>
-                                            <td><span class="protocol-chip">${rule.ipProtocol.toUpperCase()}</span></td>
-                                            <td>${rule.portRange || 'All'}</td>
-                                            <td>
-                                                ${rule.cidrBlocks.map(cidr => `<span class="cidr-chip">${cidr}</span>`).join('')}
-                                            </td>
-                                            <td>${rule.description}</td>
-                                        </tr>
-                                    `).join('')}
-                                </tbody>
-                            </table>
-                        ` : '<p style="color: #666; margin-top: 1rem;">Inbound 규칙이 없습니다.</p>'}
-                    </div>
-                    
-                    <div style="margin-bottom: 2rem;">
-                        <h3>Outbound Rules (${sg.outboundRules ? sg.outboundRules.length : 0})</h3>
-                        ${sg.outboundRules && sg.outboundRules.length > 0 ? `
-                            <table class="rules-table">
-                                <thead>
-                                    <tr>
-                                        <th>Protocol</th>
-                                        <th>Port Range</th>
-                                        <th>Destination</th>
-                                        <th>Description</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    ${sg.outboundRules.map(rule => `
-                                        <tr>
-                                            <td><span class="protocol-chip">${rule.ipProtocol === '-1' ? 'ALL' : rule.ipProtocol.toUpperCase()}</span></td>
-                                            <td>${rule.portRange || 'All'}</td>
-                                            <td>
-                                                ${rule.cidrBlocks.map(cidr => `<span class="cidr-chip">${cidr}</span>`).join('')}
-                                            </td>
-                                            <td>${rule.description}</td>
-                                        </tr>
-                                    `).join('')}
-                                </tbody>
-                            </table>
-                        ` : '<p style="color: #666; margin-top: 1rem;">Outbound 규칙이 없습니다.</p>'}
-                    </div>
-                    
-                    <div style="display: flex; gap: 1rem; justify-content: flex-end;">
-                        <button class="btn btn-primary" onclick="editSG('${sg.id}')">
-                            <span class="material-icons" style="vertical-align: middle;">edit</span>
-                            편집
-                        </button>
-                        <button class="btn btn-outline" onclick="closeSGModal()">닫기</button>
-                    </div>
-                `;
-                
-                document.getElementById('sg-detail-modal').style.display = 'block';
-                
             } catch (error) {
-                console.error('Security Group 상세 정보 로드 실패:', error);
-                alert('Security Group 상세 정보를 불러올 수 없습니다.');
+                console.error('Error loading security groups:', error);
+                showError('Failed to connect to API');
             }
         }
-        
-        // Security Group 편집
-        function editSG(sgId) {
-            alert(`Security Group 편집 기능\\n\\nID: ${sgId}\\n\\n실제 환경에서는 다음 기능들이 제공됩니다:\\n• 규칙 추가/삭제/수정\\n• 설명 변경\\n• 태그 관리\\n• 규칙 만료 설정`);
-        }
-        
-        // 모달 닫기
-        function closeSGModal() {
-            document.getElementById('sg-detail-modal').style.display = 'none';
-        }
-        
-        // 필터 설정
-        function setFilter(filter) {
-            currentFilter = filter;
+
+        // VPC 필터 옵션 채우기
+        function populateVpcFilter() {
+            const vpcFilter = document.getElementById('vpcFilter');
+            const vpcs = [...new Set(allSecurityGroups.map(sg => sg.vpcId))];
             
-            // 탭 활성화 상태 변경
-            document.querySelectorAll('.filter-tab').forEach(tab => {
-                tab.classList.remove('active');
+            // 기존 옵션 제거 (첫 번째 "All VPCs" 제외)
+            while (vpcFilter.children.length > 1) {
+                vpcFilter.removeChild(vpcFilter.lastChild);
+            }
+            
+            vpcs.forEach(vpc => {
+                const option = document.createElement('option');
+                option.value = vpc;
+                option.textContent = vpc;
+                vpcFilter.appendChild(option);
             });
-            event.target.classList.add('active');
-            
-            filterSecurityGroups();
         }
-        
+
         // Security Groups 필터링
         function filterSecurityGroups() {
-            const searchTerm = document.getElementById('search-box').value.toLowerCase();
-            
-            let filtered = allSecurityGroups.filter(sg => {
-                // 검색어 필터
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const selectedVpc = document.getElementById('vpcFilter').value;
+
+            filteredSecurityGroups = allSecurityGroups.filter(sg => {
                 const matchesSearch = !searchTerm || 
                     sg.groupName.toLowerCase().includes(searchTerm) ||
                     sg.id.toLowerCase().includes(searchTerm) ||
                     sg.description.toLowerCase().includes(searchTerm);
                 
-                // 카테고리 필터
-                let matchesFilter = true;
-                switch (currentFilter) {
-                    case 'active':
-                        matchesFilter = !sg.hasExpiredRules;
-                        break;
-                    case 'expired':
-                        matchesFilter = sg.hasExpiredRules;
-                        break;
-                    case 'recent':
-                        const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
-                        matchesFilter = new Date(sg.lastModified) > oneDayAgo;
-                        break;
-                    default:
-                        matchesFilter = true;
-                }
+                const matchesVpc = !selectedVpc || sg.vpcId === selectedVpc;
                 
-                return matchesSearch && matchesFilter;
+                return matchesSearch && matchesVpc;
             });
-            
-            displaySecurityGroups(filtered);
+
+            renderSecurityGroups();
         }
-        
-        // 모달 외부 클릭 시 닫기
-        window.onclick = function(event) {
-            const modal = document.getElementById('sg-detail-modal');
-            if (event.target === modal) {
-                closeSGModal();
+
+        // Security Groups 렌더링
+        function renderSecurityGroups() {
+            const container = document.getElementById('securityGroupsContainer');
+            
+            if (filteredSecurityGroups.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">🛡️</div>
+                        <h3>No Security Groups Found</h3>
+                        <p>Try adjusting your search criteria or refresh the data.</p>
+                    </div>
+                `;
+                return;
             }
+
+            const html = `
+                <div class="sg-grid">
+                    ${filteredSecurityGroups.map(sg => createSecurityGroupCard(sg)).join('')}
+                </div>
+            `;
+            
+            container.innerHTML = html;
+        }
+
+        // Security Group 카드 생성
+        function createSecurityGroupCard(sg) {
+            const statusClass = sg.hasExpiredRules ? 'status-warning' : 'status-active';
+            const statusText = sg.hasExpiredRules ? 'Has Expired Rules' : 'Active';
+            const statusIcon = sg.hasExpiredRules ? 'warning' : 'check_circle';
+
+            return `
+                <div class="sg-card">
+                    <div class="sg-header">
+                        <div class="sg-title">
+                            <h3 class="sg-name">${sg.groupName}</h3>
+                            <span class="sg-id">${sg.id}</span>
+                        </div>
+                        <p class="sg-description">${sg.description}</p>
+                        <div class="sg-meta">
+                            <div class="meta-item">
+                                <span class="material-icons" style="font-size: 1rem;">cloud</span>
+                                <span>${sg.vpcId}</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="material-icons" style="font-size: 1rem;">rule</span>
+                                <span>${sg.rulesCount} rules</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="status-badge ${statusClass}">
+                                    <span class="material-icons" style="font-size: 0.875rem;">${statusIcon}</span>
+                                    ${statusText}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="sg-content">
+                        <div class="rules-section">
+                            <h4 class="rules-title">
+                                <span class="material-icons">input</span>
+                                Inbound Rules (${sg.inboundRules.length})
+                            </h4>
+                            <div class="rules-list">
+                                ${sg.inboundRules.slice(0, 3).map(rule => createRuleItem(rule)).join('')}
+                                ${sg.inboundRules.length > 3 ? `<div class="rule-item"><span>... and ${sg.inboundRules.length - 3} more</span></div>` : ''}
+                            </div>
+                        </div>
+                        
+                        <div class="rules-section">
+                            <h4 class="rules-title">
+                                <span class="material-icons">output</span>
+                                Outbound Rules (${sg.outboundRules.length})
+                            </h4>
+                            <div class="rules-list">
+                                ${sg.outboundRules.slice(0, 3).map(rule => createRuleItem(rule)).join('')}
+                                ${sg.outboundRules.length > 3 ? `<div class="rule-item"><span>... and ${sg.outboundRules.length - 3} more</span></div>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="sg-actions">
+                        <button class="btn btn-secondary" onclick="viewDetails('${sg.id}')">
+                            <span class="material-icons">visibility</span>
+                            View Details
+                        </button>
+                        <button class="btn btn-secondary" onclick="createRequest('${sg.id}')">
+                            <span class="material-icons">add</span>
+                            Add Rule
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // 규칙 아이템 생성
+        function createRuleItem(rule) {
+            const source = rule.cidrBlocks.length > 0 ? rule.cidrBlocks.join(', ') : 
+                          rule.securityGroups.length > 0 ? rule.securityGroups.join(', ') : 'N/A';
+            
+            return `
+                <div class="rule-item">
+                    <div class="rule-info">
+                        <span class="rule-protocol">${rule.ipProtocol.toUpperCase()}</span>
+                        <span class="rule-port">${rule.portRange}</span>
+                        <span class="rule-source">${source}</span>
+                    </div>
+                    <span class="rule-description" title="${rule.description}">${rule.description}</span>
+                </div>
+            `;
+        }
+
+        // Security Groups 새로고침
+        async function refreshSecurityGroups() {
+            await loadSecurityGroups();
+        }
+
+        // 상세 보기
+        function viewDetails(sgId) {
+            const sg = allSecurityGroups.find(s => s.id === sgId);
+            if (sg) {
+                alert(`Security Group Details:\n\nID: ${sg.id}\nName: ${sg.groupName}\nDescription: ${sg.description}\nVPC: ${sg.vpcId}\nRules: ${sg.rulesCount}\n\nThis would open a detailed view in a real application.`);
+            }
+        }
+
+        // 요청 생성
+        function createRequest(sgId) {
+            const sg = allSecurityGroups.find(s => s.id === sgId);
+            if (sg) {
+                const confirmed = confirm(`Create a new rule request for ${sg.groupName}?\n\nThis will redirect to the Request Manager.`);
+                if (confirmed) {
+                    window.location.href = `/requests-manager.html?sg=${sgId}`;
+                }
+            }
+        }
+
+        // 로딩 표시
+        function showLoading() {
+            document.getElementById('securityGroupsContainer').innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
+                </div>
+            `;
+        }
+
+        // 에러 표시
+        function showError(message) {
+            document.getElementById('securityGroupsContainer').innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-icon">❌</div>
+                    <h3>Error</h3>
+                    <p>${message}</p>
+                    <button class="btn btn-primary" onclick="loadSecurityGroups()">
+                        <span class="material-icons">refresh</span>
+                        Retry
+                    </button>
+                </div>
+            `;
         }
     </script>
 </body>

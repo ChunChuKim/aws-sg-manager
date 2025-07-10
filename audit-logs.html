@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audit Logs - AWS Security Group Manager</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f8fafc;
+            color: #1e293b;
+            line-height: 1.6;
+        }
+
+        .main-navigation {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 2rem;
+        }
+        
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+        
+        .nav-menu {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            text-decoration: none;
+            color: white;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+        
+        .nav-item:hover {
+            background: rgba(255,255,255,0.1);
+            transform: translateY(-1px);
+        }
+        
+        .nav-item.active {
+            background: rgba(255,255,255,0.2);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .nav-user {
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            background: rgba(255,255,255,0.1);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-subtitle {
+            color: #64748b;
+            font-size: 1.1rem;
+        }
+
+        .filters-section {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            border: 1px solid #e2e8f0;
+            margin-bottom: 2rem;
+        }
+
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .filter-label {
+            font-weight: 500;
+            color: #374151;
+            font-size: 0.875rem;
+        }
+
+        .filter-input, .filter-select {
+            padding: 0.5rem;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 0.875rem;
+        }
+
+        .filter-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.2s;
+            border: none;
+            cursor: pointer;
+            font-size: 0.875rem;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5a67d8;
+        }
+
+        .btn-secondary {
+            background: #f1f5f9;
+            color: #475569;
+        }
+
+        .btn-secondary:hover {
+            background: #e2e8f0;
+        }
+
+        .logs-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+        }
+
+        .logs-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #f1f5f9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logs-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .logs-stats {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.875rem;
+            color: #64748b;
+        }
+
+        .logs-list {
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        .log-item {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #f1f5f9;
+            transition: background-color 0.2s;
+        }
+
+        .log-item:hover {
+            background: #f8fafc;
+        }
+
+        .log-item:last-child {
+            border-bottom: none;
+        }
+
+        .log-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .log-action {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 500;
+        }
+
+        .action-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.875rem;
+            color: white;
+        }
+
+        .action-view { background: #6b7280; }
+        .action-create { background: #10b981; }
+        .action-update { background: #f59e0b; }
+        .action-delete { background: #ef4444; }
+        .action-approve { background: #667eea; }
+        .action-reject { background: #ef4444; }
+        .action-apply { background: #8b5cf6; }
+        .action-error { background: #ef4444; }
+
+        .log-timestamp {
+            font-size: 0.75rem;
+            color: #9ca3af;
+            font-family: 'Monaco', 'Menlo', monospace;
+        }
+
+        .log-content {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 1rem;
+            font-size: 0.875rem;
+        }
+
+        .log-resource {
+            color: #374151;
+            font-weight: 500;
+        }
+
+        .log-details {
+            color: #64748b;
+        }
+
+        .log-user {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+            font-size: 0.75rem;
+            color: #9ca3af;
+        }
+
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 3rem;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f4f6;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #64748b;
+        }
+
+        .empty-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .nav-menu {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .filters-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .log-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .logs-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="main-navigation">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <span class="material-icons">security</span>
+                <span class="brand-text">AWS Security Group Manager</span>
+            </div>
+            <div class="nav-menu">
+                <a href="/index.html" class="nav-item">
+                    <span class="material-icons">dashboard</span>
+                    <span>Dashboard</span>
+                </a>
+                <a href="/sg-manager.html" class="nav-item">
+                    <span class="material-icons">security</span>
+                    <span>Security Groups</span>
+                </a>
+                <a href="/requests-manager.html" class="nav-item">
+                    <span class="material-icons">assignment</span>
+                    <span>Requests</span>
+                </a>
+                <a href="/network-visualization-enhanced.html" class="nav-item">
+                    <span class="material-icons">hub</span>
+                    <span>Network</span>
+                </a>
+                <a href="/audit-logs.html" class="nav-item active">
+                    <span class="material-icons">history</span>
+                    <span>Audit Logs</span>
+                </a>
+                <a href="/admin-settings.html" class="nav-item">
+                    <span class="material-icons">settings</span>
+                    <span>Settings</span>
+                </a>
+            </div>
+            <div class="nav-user">
+                <div class="user-info">
+                    <span class="material-icons">account_circle</span>
+                    <span>Admin</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="page-header">
+            <h1 class="page-title">Audit Logs</h1>
+            <p class="page-subtitle">Track all system activities and changes</p>
+        </div>
+
+        <div class="filters-section">
+            <div class="filters-grid">
+                <div class="filter-group">
+                    <label class="filter-label">Action</label>
+                    <select class="filter-select" id="actionFilter">
+                        <option value="">All Actions</option>
+                        <option value="VIEW">View</option>
+                        <option value="CREATE">Create</option>
+                        <option value="UPDATE">Update</option>
+                        <option value="DELETE">Delete</option>
+                        <option value="APPROVE">Approve</option>
+                        <option value="REJECT">Reject</option>
+                        <option value="APPLY">Apply</option>
+                        <option value="ERROR">Error</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">User</label>
+                    <input type="text" class="filter-input" id="userFilter" placeholder="Filter by user">
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Start Date</label>
+                    <input type="date" class="filter-input" id="startDateFilter">
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">End Date</label>
+                    <input type="date" class="filter-input" id="endDateFilter">
+                </div>
+            </div>
+            <div class="filter-actions">
+                <button class="btn btn-primary" onclick="applyFilters()">
+                    <span class="material-icons">filter_list</span>
+                    Apply Filters
+                </button>
+                <button class="btn btn-secondary" onclick="clearFilters()">
+                    <span class="material-icons">clear</span>
+                    Clear
+                </button>
+                <button class="btn btn-secondary" onclick="loadAuditLogs()">
+                    <span class="material-icons">refresh</span>
+                    Refresh
+                </button>
+            </div>
+        </div>
+
+        <div class="logs-container">
+            <div class="logs-header">
+                <h2 class="logs-title">Activity Log</h2>
+                <div class="logs-stats" id="logsStats">
+                    <span>Loading...</span>
+                </div>
+            </div>
+            <div id="logsContainer">
+                <div class="loading">
+                    <div class="spinner"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8081/api';
+        let allLogs = [];
+        let filteredLogs = [];
+
+        // 페이지 로드 시 초기화
+        document.addEventListener('DOMContentLoaded', function() {
+            loadAuditLogs();
+            setupEventListeners();
+        });
+
+        // 이벤트 리스너 설정
+        function setupEventListeners() {
+            // 실시간 필터링은 제거하고 버튼 클릭으로만 적용
+        }
+
+        // Audit Logs 로드
+        async function loadAuditLogs() {
+            try {
+                showLoading();
+                const response = await fetch(`${API_BASE}/audit-logs?limit=100`);
+                const data = await response.json();
+                
+                if (data.logs) {
+                    allLogs = data.logs;
+                    filteredLogs = [...allLogs];
+                    renderAuditLogs();
+                    updateStats(data);
+                } else {
+                    showError('Failed to load audit logs');
+                }
+            } catch (error) {
+                console.error('Error loading audit logs:', error);
+                showError('Failed to connect to API');
+            }
+        }
+
+        // 필터 적용
+        function applyFilters() {
+            const actionFilter = document.getElementById('actionFilter').value;
+            const userFilter = document.getElementById('userFilter').value.toLowerCase();
+            const startDate = document.getElementById('startDateFilter').value;
+            const endDate = document.getElementById('endDateFilter').value;
+
+            filteredLogs = allLogs.filter(log => {
+                const matchesAction = !actionFilter || log.action === actionFilter;
+                const matchesUser = !userFilter || log.user.toLowerCase().includes(userFilter);
+                
+                let matchesDateRange = true;
+                if (startDate || endDate) {
+                    const logDate = new Date(log.timestamp);
+                    if (startDate) {
+                        matchesDateRange = matchesDateRange && logDate >= new Date(startDate);
+                    }
+                    if (endDate) {
+                        const endDateTime = new Date(endDate);
+                        endDateTime.setHours(23, 59, 59, 999);
+                        matchesDateRange = matchesDateRange && logDate <= endDateTime;
+                    }
+                }
+                
+                return matchesAction && matchesUser && matchesDateRange;
+            });
+
+            renderAuditLogs();
+            updateStats({ 
+                total: allLogs.length, 
+                filtered: filteredLogs.length, 
+                displayed: filteredLogs.length 
+            });
+        }
+
+        // 필터 초기화
+        function clearFilters() {
+            document.getElementById('actionFilter').value = '';
+            document.getElementById('userFilter').value = '';
+            document.getElementById('startDateFilter').value = '';
+            document.getElementById('endDateFilter').value = '';
+            
+            filteredLogs = [...allLogs];
+            renderAuditLogs();
+            updateStats({ 
+                total: allLogs.length, 
+                filtered: allLogs.length, 
+                displayed: allLogs.length 
+            });
+        }
+
+        // Audit Logs 렌더링
+        function renderAuditLogs() {
+            const container = document.getElementById('logsContainer');
+            
+            if (filteredLogs.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">📋</div>
+                        <h3>No Audit Logs Found</h3>
+                        <p>No logs match your current filter criteria.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const html = `
+                <div class="logs-list">
+                    ${filteredLogs.map(log => createLogItem(log)).join('')}
+                </div>
+            `;
+            
+            container.innerHTML = html;
+        }
+
+        // 로그 아이템 생성
+        function createLogItem(log) {
+            const actionClass = `action-${log.action.toLowerCase()}`;
+            const actionIcon = getActionIcon(log.action);
+
+            return `
+                <div class="log-item">
+                    <div class="log-header">
+                        <div class="log-action">
+                            <div class="action-icon ${actionClass}">
+                                <span class="material-icons">${actionIcon}</span>
+                            </div>
+                            <span>${log.action}</span>
+                        </div>
+                        <div class="log-timestamp">${formatTimestamp(log.timestamp)}</div>
+                    </div>
+                    <div class="log-content">
+                        <div class="log-resource">${log.resource}</div>
+                        <div class="log-details">${log.details}</div>
+                    </div>
+                    <div class="log-user">
+                        <span class="material-icons" style="font-size: 1rem;">person</span>
+                        <span>${log.user}</span>
+                        <span class="material-icons" style="font-size: 1rem;">computer</span>
+                        <span>${log.ipAddress}</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        // 액션별 아이콘 반환
+        function getActionIcon(action) {
+            const icons = {
+                'VIEW': 'visibility',
+                'CREATE': 'add_circle',
+                'UPDATE': 'edit',
+                'DELETE': 'delete',
+                'APPROVE': 'check_circle',
+                'REJECT': 'cancel',
+                'APPLY': 'cloud_upload',
+                'ERROR': 'error'
+            };
+            return icons[action] || 'info';
+        }
+
+        // 타임스탬프 포맷팅
+        function formatTimestamp(timestamp) {
+            const date = new Date(timestamp);
+            const now = new Date();
+            const diff = now - date;
+            
+            // 상대 시간 표시
+            if (diff < 60000) return 'Just now';
+            if (diff < 3600000) return Math.floor(diff / 60000) + 'm ago';
+            if (diff < 86400000) return Math.floor(diff / 3600000) + 'h ago';
+            if (diff < 604800000) return Math.floor(diff / 86400000) + 'd ago';
+            
+            // 절대 시간 표시
+            return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+        }
+
+        // 통계 업데이트
+        function updateStats(data) {
+            const statsContainer = document.getElementById('logsStats');
+            statsContainer.innerHTML = `
+                <span>Total: ${data.total || 0}</span>
+                <span>•</span>
+                <span>Filtered: ${data.filtered || 0}</span>
+                <span>•</span>
+                <span>Displayed: ${data.displayed || 0}</span>
+            `;
+        }
+
+        // 로딩 표시
+        function showLoading() {
+            document.getElementById('logsContainer').innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
+                </div>
+            `;
+        }
+
+        // 에러 표시
+        function showError(message) {
+            document.getElementById('logsContainer').innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-icon">❌</div>
+                    <h3>Error</h3>
+                    <p>${message}</p>
+                    <button class="btn btn-primary" onclick="loadAuditLogs()">
+                        <span class="material-icons">refresh</span>
+                        Retry
+                    </button>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>

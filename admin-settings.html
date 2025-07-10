@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Settings - AWS Security Group Manager</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f8fafc;
+            color: #1e293b;
+            line-height: 1.6;
+        }
+
+        .main-navigation {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 2rem;
+        }
+        
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+        
+        .nav-menu {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            text-decoration: none;
+            color: white;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+        
+        .nav-item:hover {
+            background: rgba(255,255,255,0.1);
+            transform: translateY(-1px);
+        }
+        
+        .nav-item.active {
+            background: rgba(255,255,255,0.2);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .nav-user {
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            background: rgba(255,255,255,0.1);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-subtitle {
+            color: #64748b;
+            font-size: 1.1rem;
+        }
+
+        .tabs {
+            display: flex;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            border: 1px solid #e2e8f0;
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 1rem 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            background: none;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        .tab.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .tab:hover:not(.active) {
+            background: #f8fafc;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .card-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #f1f5f9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .card-content {
+            padding: 1.5rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-label {
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .form-input, .form-select, .form-textarea {
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.2s;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5a67d8;
+        }
+
+        .btn-secondary {
+            background: #f1f5f9;
+            color: #475569;
+        }
+
+        .btn-secondary:hover {
+            background: #e2e8f0;
+        }
+
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .data-table th {
+            background: #f8fafc;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .data-table tr:hover {
+            background: #f8fafc;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .status-active {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-inactive {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .workflow-step {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .step-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .step-title {
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .step-order {
+            background: #667eea;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 3rem;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f4f6;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .nav-menu {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .data-table {
+                font-size: 0.875rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="main-navigation">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <span class="material-icons">security</span>
+                <span class="brand-text">AWS Security Group Manager</span>
+            </div>
+            <div class="nav-menu">
+                <a href="/index.html" class="nav-item">
+                    <span class="material-icons">dashboard</span>
+                    <span>Dashboard</span>
+                </a>
+                <a href="/sg-manager.html" class="nav-item">
+                    <span class="material-icons">security</span>
+                    <span>Security Groups</span>
+                </a>
+                <a href="/requests-manager.html" class="nav-item">
+                    <span class="material-icons">assignment</span>
+                    <span>Requests</span>
+                </a>
+                <a href="/network-visualization-enhanced.html" class="nav-item">
+                    <span class="material-icons">hub</span>
+                    <span>Network</span>
+                </a>
+                <a href="/audit-logs.html" class="nav-item">
+                    <span class="material-icons">history</span>
+                    <span>Audit Logs</span>
+                </a>
+                <a href="/admin-settings.html" class="nav-item active">
+                    <span class="material-icons">settings</span>
+                    <span>Settings</span>
+                </a>
+            </div>
+            <div class="nav-user">
+                <div class="user-info">
+                    <span class="material-icons">account_circle</span>
+                    <span>Admin</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="page-header">
+            <h1 class="page-title">Admin Settings</h1>
+            <p class="page-subtitle">Manage users, workflows, and system configuration</p>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('users')">User Management</button>
+            <button class="tab" onclick="switchTab('workflows')">Workflow Settings</button>
+            <button class="tab" onclick="switchTab('approvers')">Approver Assignment</button>
+        </div>
+
+        <!-- User Management Tab -->
+        <div id="usersTab" class="tab-content active">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Add New User</h2>
+                </div>
+                <div class="card-content">
+                    <form id="createUserForm">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label class="form-label">Name *</label>
+                                <input type="text" class="form-input" id="userName" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Email *</label>
+                                <input type="email" class="form-input" id="userEmail" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Role *</label>
+                                <select class="form-select" id="userRole" required>
+                                    <option value="">Select role</option>
+                                    <option value="admin">Administrator</option>
+                                    <option value="security_manager">Security Manager</option>
+                                    <option value="network_engineer">Network Engineer</option>
+                                    <option value="devops_lead">DevOps Lead</option>
+                                    <option value="developer">Developer</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Department</label>
+                                <input type="text" class="form-input" id="userDepartment">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <span class="material-icons">person_add</span>
+                            Add User
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Users</h2>
+                    <button class="btn btn-secondary" onclick="loadUsers()">
+                        <span class="material-icons">refresh</span>
+                        Refresh
+                    </button>
+                </div>
+                <div class="card-content">
+                    <div id="usersContainer">
+                        <div class="loading">
+                            <div class="spinner"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Workflow Settings Tab -->
+        <div id="workflowsTab" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Workflows</h2>
+                    <button class="btn btn-secondary" onclick="loadWorkflows()">
+                        <span class="material-icons">refresh</span>
+                        Refresh
+                    </button>
+                </div>
+                <div class="card-content">
+                    <div id="workflowsContainer">
+                        <div class="loading">
+                            <div class="spinner"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Approver Assignment Tab -->
+        <div id="approversTab" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Pending Requests</h2>
+                </div>
+                <div class="card-content">
+                    <div id="pendingRequestsContainer">
+                        <div class="loading">
+                            <div class="spinner"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8081/api';
+        let allUsers = [];
+        let allWorkflows = [];
+        let pendingRequests = [];
+
+        // 페이지 로드 시 초기화
+        document.addEventListener('DOMContentLoaded', function() {
+            loadUsers();
+            loadWorkflows();
+            loadPendingRequests();
+            setupFormHandlers();
+        });
+
+        // 탭 전환
+        function switchTab(tabName) {
+            // 탭 버튼 활성화
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // 탭 컨텐츠 표시
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.getElementById(tabName + 'Tab').classList.add('active');
+        }
+
+        // 폼 핸들러 설정
+        function setupFormHandlers() {
+            document.getElementById('createUserForm').addEventListener('submit', handleCreateUser);
+        }
+
+        // 사용자 생성 처리
+        async function handleCreateUser(event) {
+            event.preventDefault();
+            
+            const userData = {
+                name: document.getElementById('userName').value,
+                email: document.getElementById('userEmail').value,
+                role: document.getElementById('userRole').value,
+                department: document.getElementById('userDepartment').value
+            };
+            
+            try {
+                const response = await fetch(`${API_BASE}/users/create`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(userData)
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    alert('User created successfully!');
+                    document.getElementById('createUserForm').reset();
+                    loadUsers();
+                } else {
+                    alert('Error creating user: ' + result.error);
+                }
+            } catch (error) {
+                console.error('Error creating user:', error);
+                alert('Failed to create user. Please try again.');
+            }
+        }
+
+        // 사용자 목록 로드
+        async function loadUsers() {
+            try {
+                const response = await fetch(`${API_BASE}/users`);
+                const data = await response.json();
+                
+                if (data.data) {
+                    allUsers = data.data;
+                    renderUsers();
+                }
+            } catch (error) {
+                console.error('Error loading users:', error);
+                document.getElementById('usersContainer').innerHTML = '<p>Failed to load users</p>';
+            }
+        }
+
+        // 사용자 목록 렌더링
+        function renderUsers() {
+            const container = document.getElementById('usersContainer');
+            
+            if (allUsers.length === 0) {
+                container.innerHTML = '<p>No users found</p>';
+                return;
+            }
+
+            const html = `
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Department</th>
+                            <th>Status</th>
+                            <th>Last Login</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${allUsers.map(user => `
+                            <tr>
+                                <td>${user.name}</td>
+                                <td>${user.email}</td>
+                                <td>${formatRole(user.role)}</td>
+                                <td>${user.department || '-'}</td>
+                                <td>
+                                    <span class="status-badge ${user.active ? 'status-active' : 'status-inactive'}">
+                                        ${user.active ? 'Active' : 'Inactive'}
+                                    </span>
+                                </td>
+                                <td>${user.lastLogin ? formatDate(user.lastLogin) : 'Never'}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+            
+            container.innerHTML = html;
+        }
+
+        // 워크플로우 목록 로드
+        async function loadWorkflows() {
+            try {
+                const response = await fetch(`${API_BASE}/workflows`);
+                const data = await response.json();
+                
+                if (data.data) {
+                    allWorkflows = data.data;
+                    renderWorkflows();
+                }
+            } catch (error) {
+                console.error('Error loading workflows:', error);
+                document.getElementById('workflowsContainer').innerHTML = '<p>Failed to load workflows</p>';
+            }
+        }
+
+        // 워크플로우 목록 렌더링
+        function renderWorkflows() {
+            const container = document.getElementById('workflowsContainer');
+            
+            if (allWorkflows.length === 0) {
+                container.innerHTML = '<p>No workflows found</p>';
+                return;
+            }
+
+            const html = allWorkflows.map(workflow => `
+                <div class="workflow-step" style="margin-bottom: 2rem;">
+                    <div class="step-header">
+                        <h3 class="step-title">${workflow.name}</h3>
+                        <span class="status-badge ${workflow.active ? 'status-active' : 'status-inactive'}">
+                            ${workflow.active ? 'Active' : 'Inactive'}
+                        </span>
+                    </div>
+                    <p style="color: #64748b; margin-bottom: 1rem;">${workflow.description}</p>
+                    <div>
+                        <strong>Steps:</strong>
+                        ${workflow.steps.map(step => `
+                            <div class="workflow-step">
+                                <div class="step-header">
+                                    <span class="step-title">${step.name}</span>
+                                    <span class="step-order">${step.order}</span>
+                                </div>
+                                <p style="color: #64748b; font-size: 0.875rem;">${step.description}</p>
+                                <p style="color: #374151; font-size: 0.875rem; margin-top: 0.5rem;">
+                                    <strong>Approver Role:</strong> ${formatRole(step.approverRole)}
+                                </p>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+            
+            container.innerHTML = html;
+        }
+
+        // 대기 중인 요청 로드
+        async function loadPendingRequests() {
+            try {
+                const response = await fetch(`${API_BASE}/requests?status=pending`);
+                const data = await response.json();
+                
+                if (data.data) {
+                    pendingRequests = data.data;
+                    renderPendingRequests();
+                }
+            } catch (error) {
+                console.error('Error loading pending requests:', error);
+                document.getElementById('pendingRequestsContainer').innerHTML = '<p>Failed to load pending requests</p>';
+            }
+        }
+
+        // 대기 중인 요청 렌더링
+        function renderPendingRequests() {
+            const container = document.getElementById('pendingRequestsContainer');
+            
+            if (pendingRequests.length === 0) {
+                container.innerHTML = '<p>No pending requests</p>';
+                return;
+            }
+
+            const html = pendingRequests.map(request => `
+                <div class="workflow-step">
+                    <div class="step-header">
+                        <span class="step-title">${request.id}</span>
+                        <span class="status-badge status-pending">Pending</span>
+                    </div>
+                    <p><strong>Type:</strong> ${request.type}</p>
+                    <p><strong>Requested By:</strong> ${request.requestedBy}</p>
+                    <p><strong>Security Group:</strong> ${request.securityGroupId}</p>
+                    <p><strong>Justification:</strong> ${request.businessJustification}</p>
+                    ${request.assignedApprover ? `
+                        <p><strong>Assigned to:</strong> ${request.assignedApprover.name} (${request.assignedApprover.email})</p>
+                    ` : `
+                        <div style="margin-top: 1rem;">
+                            <select id="approver-${request.id}" class="form-select" style="margin-right: 0.5rem;">
+                                <option value="">Select Approver</option>
+                                ${allUsers.filter(u => u.role !== 'developer').map(user => `
+                                    <option value="${user.id}">${user.name} (${formatRole(user.role)})</option>
+                                `).join('')}
+                            </select>
+                            <button class="btn btn-primary" onclick="assignApprover('${request.id}')">
+                                <span class="material-icons">person_add</span>
+                                Assign
+                            </button>
+                        </div>
+                    `}
+                </div>
+            `).join('');
+            
+            container.innerHTML = html;
+        }
+
+        // 승인자 할당
+        async function assignApprover(requestId) {
+            const approverId = document.getElementById(`approver-${requestId}`).value;
+            if (!approverId) {
+                alert('Please select an approver');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/requests/${requestId}/assign-approver`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        approverId,
+                        comments: 'Assigned via admin panel'
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    alert('Approver assigned successfully!');
+                    loadPendingRequests();
+                } else {
+                    alert('Error assigning approver: ' + result.error);
+                }
+            } catch (error) {
+                console.error('Error assigning approver:', error);
+                alert('Failed to assign approver. Please try again.');
+            }
+        }
+
+        // 역할 포맷팅
+        function formatRole(role) {
+            const roleMap = {
+                'admin': 'Administrator',
+                'security_manager': 'Security Manager',
+                'network_engineer': 'Network Engineer',
+                'devops_lead': 'DevOps Lead',
+                'developer': 'Developer'
+            };
+            return roleMap[role] || role;
+        }
+
+        // 날짜 포맷팅
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+        }
+    </script>
+</body>
+</html>
