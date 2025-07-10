@@ -228,7 +228,7 @@ python3 -m http.server 8082 &
 
 ## 📞 연락처
 
-프로젝트 링크: [https://github.com/your-username/aws-security-group-manager](https://github.com/your-username/aws-security-group-manager)
+프로젝트 링크: [https://github.com/ChunChuKim/aws-sg-manager](https://github.com/ChunChuKim/aws-sg-manager)
 
 ---
 
