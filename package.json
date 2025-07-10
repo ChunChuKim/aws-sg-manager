@@ -1,13 +1,18 @@
 {
   "name": "aws-security-group-manager",
-  "version": "1.0.0",
-  "description": "Complete enterprise-grade AWS Security Group management application developed by Amazon Q in just 1 hour",
-  "main": "aws-api.js",
+  "version": "2.0.0",
+  "description": "Complete enterprise-grade AWS Security Group management application developed by Amazon Q - Enhanced Version",
+  "main": "enhanced-api.js",
   "scripts": {
-    "start": "node aws-api.js",
-    "dev": "nodemon aws-api.js",
+    "start": "node enhanced-api.js",
+    "dev": "nodemon enhanced-api.js",
     "setup": "./run-complete.sh",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest",
+    "lint": "eslint .",
+    "build": "echo 'Building application...'",
+    "docker:build": "docker-compose build",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down"
   },
   "keywords": [
     "aws",
@@ -18,7 +23,12 @@
     "amazon-q",
     "nodejs",
     "mongodb",
-    "visualization"
+    "visualization",
+    "express",
+    "rest-api",
+    "workflow",
+    "audit",
+    "notifications"
   ],
   "author": "Amazon Q",
   "license": "MIT",
@@ -27,14 +37,27 @@
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "mongodb": "^6.3.0",
-    "aws-sdk": "^2.1490.0"
+    "aws-sdk": "^2.1490.0",
+    "nodemailer": "^6.9.7",
+    "axios": "^1.6.2",
+    "joi": "^17.11.0",
+    "jsonwebtoken": "^9.0.2",
+    "bcryptjs": "^2.4.3",
+    "helmet": "^7.1.0",
+    "express-rate-limit": "^7.1.5",
+    "winston": "^3.11.0",
+    "cron": "^3.1.6",
+    "moment": "^2.29.4"
   },
   "devDependencies": {
-    "nodemon": "^3.0.2"
+    "nodemon": "^3.0.2",
+    "jest": "^29.7.0",
+    "supertest": "^6.3.3",
+    "eslint": "^8.55.0"
   },
   "engines": {
-    "node": ">=14.0.0",
-    "npm": ">=6.0.0"
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
   },
   "repository": {
     "type": "git",

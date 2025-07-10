@@ -1,0 +1,45 @@
+# Node.js 기반 이미지
+FROM node:18-alpine
+
+# 작업 디렉토리 설정
+WORKDIR /app
+
+# 시스템 패키지 업데이트 및 필요한 도구 설치
+RUN apk update && apk add --no-cache \
+    curl \
+    python3 \
+    py3-pip \
+    aws-cli \
+    && rm -rf /var/cache/apk/*
+
+# package.json과 package-lock.json 복사
+COPY package*.json ./
+
+# 의존성 설치
+RUN npm ci --only=production && npm cache clean --force
+
+# 애플리케이션 코드 복사
+COPY enhanced-api.js ./
+COPY aws-api.js ./
+COPY .env.example ./
+
+# 로그 디렉토리 생성
+RUN mkdir -p /app/logs
+
+# 비root 사용자 생성
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S nodejs -u 1001
+
+# 파일 권한 설정
+RUN chown -R nodejs:nodejs /app
+USER nodejs
+
+# 포트 노출
+EXPOSE 8081
+
+# 헬스체크 설정
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:8081/api/health || exit 1
+
+# 애플리케이션 시작
+CMD ["node", "enhanced-api.js"]
