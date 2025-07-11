@@ -19,7 +19,7 @@ COPY package*.json ./
 RUN npm ci --only=production && npm cache clean --force
 
 # 애플리케이션 코드 복사
-COPY enhanced-api.js ./
+COPY enhanced-api-fixed.js ./
 COPY aws-api.js ./
 COPY .env.example ./
 
@@ -42,4 +42,4 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
     CMD curl -f http://localhost:8081/api/health || exit 1
 
 # 애플리케이션 시작
-CMD ["node", "enhanced-api.js"]
+CMD ["node", "enhanced-api-fixed.js"]

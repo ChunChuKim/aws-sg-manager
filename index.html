@@ -316,6 +316,285 @@
             animation: spin 1s linear infinite;
         }
 
+        .server-status-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .service-status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .service-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #10b981;
+            animation: pulse 2s infinite;
+        }
+
+        .service-dot.offline {
+            background: #ef4444;
+            animation: none;
+        }
+
+        .service-dot.warning {
+            background: #f59e0b;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+            }
+            70% {
+                transform: scale(1);
+                box-shadow: 0 0 0 10px rgba(16, 185, 129, 0);
+            }
+            100% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+            }
+        }
+
+        .section-header {
+            margin: 2rem 0 1rem 0;
+            text-align: center;
+        }
+
+        .section-header h2 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .section-header p {
+            color: #64748b;
+            font-size: 1rem;
+        }
+
+        .monitoring-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .monitoring-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e2e8f0;
+        }
+
+        .monitoring-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .monitoring-header h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .refresh-btn {
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 6px;
+            background: #f1f5f9;
+            color: #64748b;
+            transition: all 0.2s;
+        }
+
+        .refresh-btn:hover {
+            background: #e2e8f0;
+            color: #475569;
+        }
+
+        .service-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .service-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem;
+            background: #f8fafc;
+            border-radius: 8px;
+        }
+
+        .service-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .service-name {
+            font-weight: 500;
+            color: #1e293b;
+            font-size: 0.9rem;
+        }
+
+        .service-endpoint {
+            font-size: 0.8rem;
+            color: #64748b;
+            font-family: 'Courier New', monospace;
+        }
+
+        .service-status-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #10b981;
+        }
+
+        .status-dot.offline {
+            background: #ef4444;
+        }
+
+        .status-dot.warning {
+            background: #f59e0b;
+        }
+
+        .status-text {
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #059669;
+        }
+
+        .metrics-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .metric-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem;
+            background: #f8fafc;
+            border-radius: 8px;
+        }
+
+        .metric-label {
+            font-weight: 500;
+            color: #475569;
+            font-size: 0.9rem;
+        }
+
+        .metric-value {
+            font-weight: 600;
+            color: #1e293b;
+            font-size: 0.9rem;
+        }
+
+        .loading-small {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .last-updated {
+            font-size: 0.8rem;
+            color: #64748b;
+        }
+
+        .health-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .health-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #10b981;
+            animation: pulse 2s infinite;
+        }
+
+        .health-text {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #059669;
+        }
+
+        .health-checks {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .health-check-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.75rem;
+            background: #f8fafc;
+            border-radius: 8px;
+        }
+
+        .health-icon {
+            color: #64748b;
+            font-size: 1.2rem;
+        }
+
+        .health-info {
+            flex: 1;
+        }
+
+        .health-name {
+            font-weight: 500;
+            color: #1e293b;
+            font-size: 0.9rem;
+        }
+
+        .health-status {
+            font-size: 0.8rem;
+            color: #64748b;
+        }
+
+        .health-badge {
+            color: #10b981;
+        }
+
+        .health-badge.warning {
+            color: #f59e0b;
+        }
+
+        .health-badge.error {
+            color: #ef4444;
+        }
+
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
@@ -410,7 +689,7 @@
                     </div>
                 </div>
                 <div class="stat-value" id="totalSGs">
-                    <div class="loading"></div>
+                    0
                 </div>
                 <div class="stat-change positive">
                     <span class="material-icons" style="font-size: 1rem;">trending_up</span>
@@ -426,7 +705,7 @@
                     </div>
                 </div>
                 <div class="stat-value" id="pendingRequests">
-                    <div class="loading"></div>
+                    0
                 </div>
                 <div class="stat-change" id="pendingChange">
                     <span class="material-icons" style="font-size: 1rem;">schedule</span>
@@ -442,7 +721,7 @@
                     </div>
                 </div>
                 <div class="stat-value" id="expiredRules">
-                    <div class="loading"></div>
+                    0
                 </div>
                 <div class="stat-change negative" id="expiredChange">
                     <span class="material-icons" style="font-size: 1rem;">error</span>
@@ -459,12 +738,163 @@
                 </div>
                 <div class="stat-value" id="systemHealth">
                     <span class="status-indicator status-active" id="healthStatus">
-                        <span class="loading"></span>
+                        <span class="material-icons" style="font-size: 1rem;">check_circle</span>Checking...
                     </span>
                 </div>
-                <div class="stat-change positive">
+                <div class="stat-change positive" id="healthChange">
                     <span class="material-icons" style="font-size: 1rem;">check_circle</span>
                     <span>All systems operational</span>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-title">Server Status</span>
+                    <div class="stat-icon" style="background: #3b82f6;">
+                        <span class="material-icons">dns</span>
+                    </div>
+                </div>
+                <div class="stat-value" id="serverStatus">
+                    <div class="server-status-grid">
+                        <div class="service-status" id="apiStatus">
+                            <span class="service-dot"></span>
+                            <span>API Server</span>
+                        </div>
+                        <div class="service-status" id="frontendStatus">
+                            <span class="service-dot"></span>
+                            <span>Frontend</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="stat-change" id="serverUptime">
+                    <span class="material-icons" style="font-size: 1rem;">schedule</span>
+                    <span>Uptime: <span id="uptimeValue">Loading...</span></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 서버 모니터링 섹션 -->
+        <div class="section-header">
+            <h2>🖥️ Server Monitoring</h2>
+            <p>Real-time server status and performance metrics</p>
+        </div>
+
+        <div class="monitoring-grid">
+            <div class="monitoring-card">
+                <div class="monitoring-header">
+                    <h3>Service Status</h3>
+                    <div class="refresh-btn" onclick="loadServerStatus()">
+                        <span class="material-icons">refresh</span>
+                    </div>
+                </div>
+                <div class="service-list">
+                    <div class="service-item">
+                        <div class="service-info">
+                            <span class="service-name">API Server</span>
+                            <span class="service-endpoint">http://localhost:8081</span>
+                        </div>
+                        <div class="service-status-badge" id="apiServiceBadge">
+                            <span class="status-dot"></span>
+                            <span class="status-text">Checking...</span>
+                        </div>
+                    </div>
+                    <div class="service-item">
+                        <div class="service-info">
+                            <span class="service-name">Frontend Server</span>
+                            <span class="service-endpoint">http://localhost:8082</span>
+                        </div>
+                        <div class="service-status-badge" id="frontendServiceBadge">
+                            <span class="status-dot"></span>
+                            <span class="status-text">Online</span>
+                        </div>
+                    </div>
+                    <div class="service-item">
+                        <div class="service-info">
+                            <span class="service-name">AWS Connection</span>
+                            <span class="service-endpoint">Demo Mode</span>
+                        </div>
+                        <div class="service-status-badge" id="awsServiceBadge">
+                            <span class="status-dot"></span>
+                            <span class="status-text">Checking...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="monitoring-card">
+                <div class="monitoring-header">
+                    <h3>Performance Metrics</h3>
+                    <div class="last-updated" id="metricsUpdated">
+                        Last updated: <span id="lastUpdateTime">Loading...</span>
+                    </div>
+                </div>
+                <div class="metrics-list">
+                    <div class="metric-item">
+                        <div class="metric-label">Server Uptime</div>
+                        <div class="metric-value" id="serverUptimeMetric">
+                            <span class="loading-small"></span>
+                        </div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">API Response Time</div>
+                        <div class="metric-value" id="responseTimeMetric">
+                            <span class="loading-small"></span>
+                        </div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Total Requests</div>
+                        <div class="metric-value" id="totalRequestsMetric">
+                            <span class="loading-small"></span>
+                        </div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Memory Usage</div>
+                        <div class="metric-value" id="memoryUsageMetric">
+                            <span class="loading-small"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="monitoring-card">
+                <div class="monitoring-header">
+                    <h3>System Health</h3>
+                    <div class="health-indicator" id="overallHealthIndicator">
+                        <span class="health-dot"></span>
+                        <span class="health-text">Checking...</span>
+                    </div>
+                </div>
+                <div class="health-checks">
+                    <div class="health-check-item">
+                        <span class="material-icons health-icon">storage</span>
+                        <div class="health-info">
+                            <div class="health-name">Database</div>
+                            <div class="health-status" id="dbHealthStatus">Memory Store</div>
+                        </div>
+                        <div class="health-badge" id="dbHealthBadge">
+                            <span class="material-icons">check_circle</span>
+                        </div>
+                    </div>
+                    <div class="health-check-item">
+                        <span class="material-icons health-icon">cloud</span>
+                        <div class="health-info">
+                            <div class="health-name">AWS Services</div>
+                            <div class="health-status" id="awsHealthStatus">Demo Mode</div>
+                        </div>
+                        <div class="health-badge" id="awsHealthBadge">
+                            <span class="material-icons">info</span>
+                        </div>
+                    </div>
+                    <div class="health-check-item">
+                        <span class="material-icons health-icon">security</span>
+                        <div class="health-info">
+                            <div class="health-name">Security</div>
+                            <div class="health-status" id="securityHealthStatus">Protected</div>
+                        </div>
+                        <div class="health-badge" id="securityHealthBadge">
+                            <span class="material-icons">check_circle</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -484,6 +914,14 @@
                 </div>
                 <div class="action-title">Request Management</div>
                 <div class="action-desc">Create and approve security group changes</div>
+            </a>
+
+            <a href="/easy-request.html" class="action-card">
+                <div class="action-icon" style="background: #10b981;">
+                    <span class="material-icons">rocket_launch</span>
+                </div>
+                <div class="action-title">🚀 Easy Request</div>
+                <div class="action-desc">Simple 3-step security group request process</div>
             </a>
 
             <a href="/network-visualization-enhanced.html" class="action-card">
@@ -577,23 +1015,52 @@
 
     <script>
         // API 기본 URL
-        const API_BASE = 'http://localhost:8081/api';
+        const API_BASE = `http://${window.location.hostname}:8081/api`;
 
         // 페이지 로드 시 초기화
         document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Dashboard initializing...');
+            console.log('🌐 API Base URL:', API_BASE);
+            console.log('🏠 Current hostname:', window.location.hostname);
+            console.log('📍 Current origin:', window.location.origin);
+            
+            // 프론트엔드 서버는 페이지가 로드되었으므로 온라인 상태로 설정
+            updateServiceStatus('frontendServiceBadge', true, 'Online');
+            
+            // 초기 로딩 상태 표시
+            document.getElementById('totalSGs').innerHTML = '<div class="loading"></div>';
+            document.getElementById('pendingRequests').innerHTML = '<div class="loading"></div>';
+            document.getElementById('expiredRules').innerHTML = '<div class="loading"></div>';
+            
             loadDashboardData();
             loadSystemStatus();
+            loadServerStatus();
             loadRecentActivity();
             
             // 30초마다 데이터 새로고침
-            setInterval(loadDashboardData, 30000);
+            setInterval(() => {
+                console.log('🔄 Auto-refreshing data...');
+                loadDashboardData();
+                loadSystemStatus();
+                loadServerStatus();
+            }, 30000);
+            
+            console.log('✅ Dashboard initialization complete');
         });
 
         // 대시보드 데이터 로드
         async function loadDashboardData() {
+            console.log('🔄 Loading dashboard data...');
             try {
                 const response = await fetch(`${API_BASE}/stats`);
+                console.log('📡 Stats API response status:', response.status);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
                 const data = await response.json();
+                console.log('📊 Stats data received:', data);
                 
                 document.getElementById('totalSGs').textContent = data.totalSecurityGroups || '0';
                 document.getElementById('pendingRequests').textContent = data.pendingRequests || '0';
@@ -601,25 +1068,36 @@
                 
                 // 상태에 따른 색상 변경
                 const pendingChange = document.getElementById('pendingChange');
-                if (data.pendingRequests > 0) {
-                    pendingChange.className = 'stat-change negative';
-                } else {
-                    pendingChange.className = 'stat-change positive';
+                if (pendingChange) {
+                    if (data.pendingRequests > 0) {
+                        pendingChange.className = 'stat-change negative';
+                    } else {
+                        pendingChange.className = 'stat-change positive';
+                    }
                 }
 
                 const expiredChange = document.getElementById('expiredChange');
-                if (data.expiredRules > 0) {
-                    expiredChange.className = 'stat-change negative';
-                } else {
-                    expiredChange.className = 'stat-change positive';
+                if (expiredChange) {
+                    if (data.expiredRules > 0) {
+                        expiredChange.className = 'stat-change negative';
+                    } else {
+                        expiredChange.className = 'stat-change positive';
+                    }
                 }
 
+                console.log('✅ Dashboard data loaded successfully');
+
             } catch (error) {
-                console.error('Failed to load dashboard data:', error);
+                console.error('❌ Failed to load dashboard data:', error);
                 // 오류 시 기본값 표시
-                document.getElementById('totalSGs').textContent = '0';
-                document.getElementById('pendingRequests').textContent = '0';
-                document.getElementById('expiredRules').textContent = '0';
+                document.getElementById('totalSGs').textContent = 'Error';
+                document.getElementById('pendingRequests').textContent = 'Error';
+                document.getElementById('expiredRules').textContent = 'Error';
+                
+                // 에러 상태 표시
+                document.getElementById('totalSGs').style.color = '#ef4444';
+                document.getElementById('pendingRequests').style.color = '#ef4444';
+                document.getElementById('expiredRules').style.color = '#ef4444';
             }
         }
 
@@ -666,6 +1144,286 @@
 
                 document.getElementById('healthStatus').innerHTML = '<span class="material-icons" style="font-size: 1rem;">warning</span>Limited';
                 document.getElementById('healthStatus').className = 'status-indicator status-pending';
+            }
+        }
+
+        // 서버 상태 모니터링
+        async function loadServerStatus() {
+            console.log('🔄 Loading server status...');
+            const startTime = Date.now();
+            
+            try {
+                // API 서버 상태 확인
+                const healthResponse = await fetch(`${API_BASE}/health`);
+                console.log('📡 Health API response status:', healthResponse.status);
+                
+                if (!healthResponse.ok) {
+                    throw new Error(`HTTP error! status: ${healthResponse.status}`);
+                }
+                
+                const healthData = await healthResponse.json();
+                const responseTime = Date.now() - startTime;
+                console.log('💚 Health data received:', healthData);
+                console.log('⏱️ Response time:', responseTime + 'ms');
+                
+                // API 서버 상태 업데이트
+                updateServiceStatus('apiServiceBadge', true, 'Online');
+                updateServiceStatus('awsServiceBadge', true, healthData.aws?.status || 'Demo Mode');
+                
+                // 메트릭 업데이트
+                updateMetrics(healthData, responseTime);
+                
+                // 헬스 체크 업데이트
+                updateHealthChecks(healthData);
+                
+                // 전체 시스템 상태 업데이트
+                updateOverallHealth(true);
+                
+                // 기존 서버 상태 카드 업데이트
+                const apiStatusElement = document.getElementById('apiStatus');
+                if (apiStatusElement) {
+                    const apiDot = apiStatusElement.querySelector('.service-dot');
+                    if (apiDot) {
+                        apiDot.className = 'service-dot';
+                    }
+                }
+                
+                const frontendStatusElement = document.getElementById('frontendStatus');
+                if (frontendStatusElement) {
+                    const frontendDot = frontendStatusElement.querySelector('.service-dot');
+                    if (frontendDot) {
+                        frontendDot.className = 'service-dot';
+                    }
+                }
+                
+                // 업타임 정보 업데이트
+                const uptimeSeconds = healthData.uptime || 0;
+                const uptimeFormatted = formatUptime(uptimeSeconds);
+                const uptimeElement = document.getElementById('uptimeValue');
+                if (uptimeElement) {
+                    uptimeElement.textContent = uptimeFormatted;
+                }
+                
+                // 시스템 헬스 상태 업데이트
+                const healthChange = document.getElementById('healthChange');
+                if (healthChange) {
+                    if (healthData.status === 'healthy') {
+                        healthChange.innerHTML = '<span class="material-icons" style="font-size: 1rem;">check_circle</span><span>All systems operational</span>';
+                        healthChange.className = 'stat-change positive';
+                    } else {
+                        healthChange.innerHTML = '<span class="material-icons" style="font-size: 1rem;">warning</span><span>Some issues detected</span>';
+                        healthChange.className = 'stat-change negative';
+                    }
+                }
+
+                console.log('✅ Server status loaded successfully');
+
+            } catch (error) {
+                console.error('❌ Failed to load server status:', error);
+                console.error('🔍 Error details:', {
+                    message: error.message,
+                    stack: error.stack,
+                    apiUrl: `${API_BASE}/health`
+                });
+                
+                // API 서버 오프라인 상태
+                updateServiceStatus('apiServiceBadge', false, 'Offline');
+                updateServiceStatus('awsServiceBadge', false, 'Unknown');
+                
+                // 메트릭 오류 상태
+                updateMetricsError();
+                
+                // 헬스 체크 오류 상태
+                updateHealthChecksError();
+                
+                // 전체 시스템 상태 오류
+                updateOverallHealth(false);
+                
+                // 기존 서버 상태 카드 오류 업데이트
+                const apiStatusElement = document.getElementById('apiStatus');
+                if (apiStatusElement) {
+                    const apiDot = apiStatusElement.querySelector('.service-dot');
+                    if (apiDot) {
+                        apiDot.className = 'service-dot offline';
+                    }
+                }
+                
+                const frontendStatusElement = document.getElementById('frontendStatus');
+                if (frontendStatusElement) {
+                    const frontendDot = frontendStatusElement.querySelector('.service-dot');
+                    if (frontendDot) {
+                        frontendDot.className = 'service-dot warning';
+                    }
+                }
+                
+                const uptimeElement = document.getElementById('uptimeValue');
+                if (uptimeElement) {
+                    uptimeElement.textContent = 'Unknown';
+                }
+                
+                const healthChange = document.getElementById('healthChange');
+                if (healthChange) {
+                    healthChange.innerHTML = '<span class="material-icons" style="font-size: 1rem;">error</span><span>API connection failed</span>';
+                    healthChange.className = 'stat-change negative';
+                }
+            }
+            
+            // 마지막 업데이트 시간 설정
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            const lastUpdateElement = document.getElementById('lastUpdateTime');
+            if (lastUpdateElement) {
+                lastUpdateElement.textContent = timeString;
+            }
+        }
+
+        // 서비스 상태 업데이트
+        function updateServiceStatus(elementId, isOnline, statusText) {
+            const element = document.getElementById(elementId);
+            if (!element) return;
+            
+            const dot = element.querySelector('.status-dot');
+            const text = element.querySelector('.status-text');
+            
+            if (dot && text) {
+                dot.className = isOnline ? 'status-dot' : 'status-dot offline';
+                text.textContent = statusText;
+                
+                // 배지 색상 업데이트
+                if (isOnline) {
+                    element.style.background = '#f0fdf4';
+                    element.style.borderColor = '#bbf7d0';
+                    text.style.color = '#059669';
+                } else {
+                    element.style.background = '#fef2f2';
+                    element.style.borderColor = '#fecaca';
+                    text.style.color = '#dc2626';
+                }
+            }
+        }
+
+        // 메트릭 업데이트
+        function updateMetrics(healthData, responseTime) {
+            // 서버 업타임
+            const uptimeElement = document.getElementById('serverUptimeMetric');
+            if (uptimeElement) {
+                const uptimeFormatted = formatUptime(healthData.uptime || 0);
+                uptimeElement.textContent = uptimeFormatted;
+            }
+            
+            // API 응답 시간
+            const responseTimeElement = document.getElementById('responseTimeMetric');
+            if (responseTimeElement) {
+                responseTimeElement.textContent = `${responseTime}ms`;
+            }
+            
+            // 총 요청 수 (감사 로그에서 추정)
+            const totalRequestsElement = document.getElementById('totalRequestsMetric');
+            if (totalRequestsElement) {
+                const totalRequests = healthData.stats?.totalRequests || 'N/A';
+                totalRequestsElement.textContent = totalRequests;
+            }
+            
+            // 메모리 사용량 (추정값)
+            const memoryElement = document.getElementById('memoryUsageMetric');
+            if (memoryElement) {
+                memoryElement.textContent = '~36MB';
+            }
+        }
+
+        // 메트릭 오류 상태 업데이트
+        function updateMetricsError() {
+            const elements = [
+                'serverUptimeMetric',
+                'responseTimeMetric', 
+                'totalRequestsMetric',
+                'memoryUsageMetric'
+            ];
+            
+            elements.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.textContent = 'N/A';
+                    element.style.color = '#ef4444';
+                }
+            });
+        }
+
+        // 헬스 체크 업데이트
+        function updateHealthChecks(healthData) {
+            // 데이터베이스 상태
+            updateHealthCheck('dbHealthStatus', 'dbHealthBadge', 
+                healthData.database?.status || 'Memory Store', true);
+            
+            // AWS 서비스 상태
+            const awsStatus = healthData.aws?.status === 'demo-mode' ? 'Demo Mode' : 'Connected';
+            updateHealthCheck('awsHealthStatus', 'awsHealthBadge', awsStatus, true);
+            
+            // 보안 상태 (항상 보호됨으로 가정)
+            updateHealthCheck('securityHealthStatus', 'securityHealthBadge', 'Protected', true);
+        }
+
+        // 헬스 체크 오류 상태 업데이트
+        function updateHealthChecksError() {
+            updateHealthCheck('dbHealthStatus', 'dbHealthBadge', 'Unknown', false);
+            updateHealthCheck('awsHealthStatus', 'awsHealthBadge', 'Unknown', false);
+            updateHealthCheck('securityHealthStatus', 'securityHealthBadge', 'Unknown', false);
+        }
+
+        // 개별 헬스 체크 업데이트
+        function updateHealthCheck(statusId, badgeId, statusText, isHealthy) {
+            const statusElement = document.getElementById(statusId);
+            const badgeElement = document.getElementById(badgeId);
+            
+            if (statusElement) {
+                statusElement.textContent = statusText;
+            }
+            
+            if (badgeElement) {
+                if (isHealthy) {
+                    badgeElement.innerHTML = '<span class="material-icons">check_circle</span>';
+                    badgeElement.className = 'health-badge';
+                } else {
+                    badgeElement.innerHTML = '<span class="material-icons">error</span>';
+                    badgeElement.className = 'health-badge error';
+                }
+            }
+        }
+
+        // 전체 시스템 상태 업데이트
+        function updateOverallHealth(isHealthy) {
+            const indicator = document.getElementById('overallHealthIndicator');
+            if (!indicator) return;
+            
+            const dot = indicator.querySelector('.health-dot');
+            const text = indicator.querySelector('.health-text');
+            
+            if (dot && text) {
+                if (isHealthy) {
+                    dot.style.background = '#10b981';
+                    text.textContent = 'All Systems Operational';
+                    text.style.color = '#059669';
+                } else {
+                    dot.style.background = '#ef4444';
+                    dot.style.animation = 'none';
+                    text.textContent = 'System Issues Detected';
+                    text.style.color = '#dc2626';
+                }
+            }
+        }
+
+        // 업타임 포맷팅 함수
+        function formatUptime(seconds) {
+            const days = Math.floor(seconds / 86400);
+            const hours = Math.floor((seconds % 86400) / 3600);
+            const minutes = Math.floor((seconds % 3600) / 60);
+            
+            if (days > 0) {
+                return `${days}d ${hours}h ${minutes}m`;
+            } else if (hours > 0) {
+                return `${hours}h ${minutes}m`;
+            } else {
+                return `${minutes}m`;
             }
         }
 

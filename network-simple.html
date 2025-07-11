@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>네트워크 시각화 - 간단 버전</title>
+    <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        #network { width: 100%; height: 600px; border: 1px solid #ccc; }
+        .controls { margin: 20px 0; }
+        button { margin: 5px; padding: 10px; }
+    </style>
+</head>
+<body>
+    <h1>🌐 네트워크 시각화 테스트</h1>
+    
+    <div class="controls">
+        <button onclick="loadNetwork()">네트워크 로드</button>
+        <button onclick="clearNetwork()">초기화</button>
+    </div>
+    
+    <div id="network"></div>
+    
+    <div id="info"></div>
+    
+    <script>
+        const API_BASE = `http://${window.location.hostname}:8081/api`;
+        let network = null;
+        
+        async function loadNetwork() {
+            try {
+                document.getElementById('info').innerHTML = '로딩 중...';
+                
+                const response = await fetch(`${API_BASE}/network-visualization`);
+                const result = await response.json();
+                
+                console.log('API Response:', result);
+                
+                if (result.data && result.data.nodes && result.data.edges) {
+                    const container = document.getElementById('network');
+                    const data = {
+                        nodes: new vis.DataSet(result.data.nodes),
+                        edges: new vis.DataSet(result.data.edges)
+                    };
+                    
+                    const options = {
+                        nodes: {
+                            shape: 'box',
+                            margin: 10,
+                            font: { size: 14 }
+                        },
+                        edges: {
+                            arrows: 'to',
+                            font: { size: 12 }
+                        },
+                        physics: {
+                            enabled: true
+                        }
+                    };
+                    
+                    network = new vis.Network(container, data, options);
+                    
+                    document.getElementById('info').innerHTML = `
+                        <p>✅ 네트워크 로드 완료!</p>
+                        <p>노드: ${result.data.nodes.length}개</p>
+                        <p>엣지: ${result.data.edges.length}개</p>
+                    `;
+                } else {
+                    throw new Error('Invalid data format');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('info').innerHTML = `❌ 오류: ${error.message}`;
+            }
+        }
+        
+        function clearNetwork() {
+            if (network) {
+                network.destroy();
+                network = null;
+            }
+            document.getElementById('info').innerHTML = '네트워크가 초기화되었습니다.';
+        }
+        
+        // 페이지 로드 시 자동 실행
+        window.onload = () => {
+            console.log('API Base:', API_BASE);
+            loadNetwork();
+        };
+    </script>
+</body>
+</html>

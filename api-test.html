@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Connection Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .test-result {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .loading {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        pre {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 API Connection Test</h1>
+    
+    <div>
+        <button onclick="testHealth()">Test Health API</button>
+        <button onclick="testStats()">Test Stats API</button>
+        <button onclick="testSecurityGroups()">Test Security Groups API</button>
+        <button onclick="testAll()">Test All APIs</button>
+    </div>
+    
+    <div id="results"></div>
+
+    <script>
+        const API_BASE = `http://${window.location.hostname}:8081/api`;
+        
+        function addResult(title, success, data, error = null) {
+            const results = document.getElementById('results');
+            const div = document.createElement('div');
+            div.className = `test-result ${success ? 'success' : 'error'}`;
+            
+            let content = `<h3>${title}</h3>`;
+            if (success) {
+                content += `<p>✅ Success</p>`;
+                if (data) {
+                    content += `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+                }
+            } else {
+                content += `<p>❌ Failed: ${error}</p>`;
+            }
+            
+            div.innerHTML = content;
+            results.appendChild(div);
+        }
+        
+        function addLoading(title) {
+            const results = document.getElementById('results');
+            const div = document.createElement('div');
+            div.className = 'test-result loading';
+            div.id = `loading-${title.replace(/\s+/g, '-').toLowerCase()}`;
+            div.innerHTML = `<h3>${title}</h3><p>🔄 Testing...</p>`;
+            results.appendChild(div);
+        }
+        
+        function removeLoading(title) {
+            const loadingDiv = document.getElementById(`loading-${title.replace(/\s+/g, '-').toLowerCase()}`);
+            if (loadingDiv) {
+                loadingDiv.remove();
+            }
+        }
+        
+        async function testHealth() {
+            const title = 'Health API';
+            addLoading(title);
+            
+            try {
+                console.log('Testing:', `${API_BASE}/health`);
+                const response = await fetch(`${API_BASE}/health`);
+                console.log('Response status:', response.status);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                console.log('Response data:', data);
+                
+                removeLoading(title);
+                addResult(title, true, data);
+            } catch (error) {
+                console.error('Health API error:', error);
+                removeLoading(title);
+                addResult(title, false, null, error.message);
+            }
+        }
+        
+        async function testStats() {
+            const title = 'Stats API';
+            addLoading(title);
+            
+            try {
+                console.log('Testing:', `${API_BASE}/stats`);
+                const response = await fetch(`${API_BASE}/stats`);
+                console.log('Response status:', response.status);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                console.log('Response data:', data);
+                
+                removeLoading(title);
+                addResult(title, true, data);
+            } catch (error) {
+                console.error('Stats API error:', error);
+                removeLoading(title);
+                addResult(title, false, null, error.message);
+            }
+        }
+        
+        async function testSecurityGroups() {
+            const title = 'Security Groups API';
+            addLoading(title);
+            
+            try {
+                console.log('Testing:', `${API_BASE}/security-groups`);
+                const response = await fetch(`${API_BASE}/security-groups`);
+                console.log('Response status:', response.status);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                console.log('Response data:', data);
+                
+                removeLoading(title);
+                addResult(title, true, {
+                    total: data.total,
+                    message: data.message,
+                    dataCount: data.data ? data.data.length : 0
+                });
+            } catch (error) {
+                console.error('Security Groups API error:', error);
+                removeLoading(title);
+                addResult(title, false, null, error.message);
+            }
+        }
+        
+        async function testAll() {
+            document.getElementById('results').innerHTML = '';
+            await testHealth();
+            await testStats();
+            await testSecurityGroups();
+        }
+        
+        // 페이지 로드 시 자동 테스트
+        window.addEventListener('load', function() {
+            console.log('API Base URL:', API_BASE);
+            console.log('Current hostname:', window.location.hostname);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API 연결 테스트</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-result { margin: 10px 0; padding: 10px; border-radius: 5px; }
+        .success { background-color: #d4edda; color: #155724; }
+        .error { background-color: #f8d7da; color: #721c24; }
+        .loading { background-color: #fff3cd; color: #856404; }
+        pre { background: #f8f9fa; padding: 10px; border-radius: 5px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>🔧 API 연결 테스트</h1>
+    
+    <div id="results"></div>
+    
+    <button onclick="runTests()">테스트 실행</button>
+    
+    <script>
+        const API_BASE = `http://${window.location.hostname}:8081/api`;
+        
+        async function runTests() {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<div class="loading">테스트 실행 중...</div>';
+            
+            const tests = [
+                { name: 'Health Check', url: '/health' },
+                { name: 'Statistics', url: '/stats' },
+                { name: 'Security Groups', url: '/security-groups' },
+                { name: 'Requests', url: '/requests' },
+                { name: 'Audit Logs', url: '/audit-logs' },
+                { name: 'Network Visualization', url: '/network-visualization' }
+            ];
+            
+            let results = '<h2>테스트 결과</h2>';
+            
+            for (const test of tests) {
+                try {
+                    console.log(`Testing: ${API_BASE}${test.url}`);
+                    const response = await fetch(`${API_BASE}${test.url}`);
+                    const data = await response.json();
+                    
+                    if (response.ok) {
+                        results += `
+                            <div class="test-result success">
+                                <strong>✅ ${test.name}</strong> - 성공
+                                <details>
+                                    <summary>응답 데이터 보기</summary>
+                                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                                </details>
+                            </div>
+                        `;
+                    } else {
+                        results += `
+                            <div class="test-result error">
+                                <strong>❌ ${test.name}</strong> - 실패 (${response.status})
+                                <pre>${JSON.stringify(data, null, 2)}</pre>
+                            </div>
+                        `;
+                    }
+                } catch (error) {
+                    results += `
+                        <div class="test-result error">
+                            <strong>❌ ${test.name}</strong> - 연결 실패
+                            <pre>Error: ${error.message}</pre>
+                        </div>
+                    `;
+                }
+            }
+            
+            resultsDiv.innerHTML = results;
+        }
+        
+        // 페이지 로드 시 자동 실행
+        window.onload = () => {
+            console.log('API Base URL:', API_BASE);
+            runTests();
+        };
+    </script>
+</body>
+</html>

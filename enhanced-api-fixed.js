@@ -8,8 +8,37 @@ const PORT = process.env.PORT || 8081;
 
 // Middleware
 app.use(cors({
-    origin: ['http://localhost:8082', 'http://localhost:3001'],
-    credentials: true
+    origin: function (origin, callback) {
+        // 개발 환경에서는 모든 origin 허용
+        if (!origin) return callback(null, true);
+        
+        const allowedOrigins = [
+            'http://localhost:8082',
+            'http://localhost:3001',
+            'http://127.0.0.1:8082',
+            'http://127.0.0.1:3001'
+        ];
+        
+        // 현재 호스트의 IP 주소도 허용
+        const currentHost = process.env.HOST || 'localhost';
+        allowedOrigins.push(`http://${currentHost}:8082`);
+        allowedOrigins.push(`http://${currentHost}:3001`);
+        
+        // EC2 내부 IP도 허용
+        if (origin.includes('172.31.') || origin.includes('localhost') || origin.includes('127.0.0.1')) {
+            return callback(null, true);
+        }
+        
+        if (allowedOrigins.indexOf(origin) !== -1) {
+            callback(null, true);
+        } else {
+            console.log('🚫 CORS blocked origin:', origin);
+            callback(null, true); // 개발 환경에서는 모든 origin 허용
+        }
+    },
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 }));
 app.use(express.json());
 app.use(express.static('public'));

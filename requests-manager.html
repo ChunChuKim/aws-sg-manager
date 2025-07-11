@@ -572,7 +572,7 @@
     </div>
 
     <script>
-        const API_BASE = 'http://localhost:8081/api';
+        const API_BASE = `http://${window.location.hostname}:8081/api`;
         let allRequests = [];
         let allSecurityGroups = [];
 
@@ -604,12 +604,18 @@
         // Security Groups 로드
         async function loadSecurityGroups() {
             try {
+                console.log('Loading security groups from:', `${API_BASE}/security-groups`);
                 const response = await fetch(`${API_BASE}/security-groups`);
                 const data = await response.json();
                 
+                console.log('Security groups response:', data);
+                
                 if (data.data) {
                     allSecurityGroups = data.data;
+                    console.log('Security groups loaded:', allSecurityGroups.length);
                     populateSecurityGroupSelect();
+                } else {
+                    console.error('No security groups data received');
                 }
             } catch (error) {
                 console.error('Error loading security groups:', error);
@@ -619,6 +625,13 @@
         // Security Group 선택 옵션 채우기
         function populateSecurityGroupSelect() {
             const select = document.getElementById('securityGroupId');
+            console.log('Populating security group select, element found:', !!select);
+            console.log('Security groups to populate:', allSecurityGroups.length);
+            
+            if (!select) {
+                console.error('Security group select element not found!');
+                return;
+            }
             
             // 기존 옵션 제거 (첫 번째 제외)
             while (select.children.length > 1) {
@@ -628,9 +641,12 @@
             allSecurityGroups.forEach(sg => {
                 const option = document.createElement('option');
                 option.value = sg.id;
-                option.textContent = `${sg.groupName} (${sg.id})`;
+                option.textContent = `${sg.name} (${sg.id})`;
                 select.appendChild(option);
+                console.log('Added option:', option.textContent);
             });
+            
+            console.log('Security group select populated with', select.children.length - 1, 'options');
         }
 
         // 폼 핸들러 설정

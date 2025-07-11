@@ -770,30 +770,6 @@ app.post('/api/requests/create', (req, res) => {
         });
     }
 });
-            comments: []
-        };
-        
-        memoryStore.requests.push(request);
-        
-        // 감사 로그 기록
-        logAuditEvent('request_created', {
-            requestId: request.id,
-            requestedBy: request.requestedBy,
-            type: request.type
-        });
-        
-        res.status(201).json({
-            data: request,
-            message: 'Request created successfully'
-        });
-        
-    } catch (error) {
-        res.status(500).json({
-            error: 'Failed to create request',
-            message: error.message
-        });
-    }
-});
 
 // 요청 승인
 app.post('/api/requests/approve', async (req, res) => {
@@ -880,9 +856,6 @@ app.post('/api/requests/approve', async (req, res) => {
         res.status(500).json({
             error: 'Failed to approve request',
             message: error.message
-        });
-    }
-});
         });
     }
 });
